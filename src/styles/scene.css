@@ -1,0 +1,326 @@
+/* Interactive Courtyard Props & Ambient Animations */
+
+.secret-target {
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: filter 0.18s ease, transform 0.18s ease;
+}
+
+.secret-target:hover {
+  filter: drop-shadow(0 0 12px rgba(255, 224, 102, 0.65));
+}
+
+.secret-target:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 16px #ffd166);
+}
+
+.secret-target.is-reacting {
+  animation: pop-bounce 0.52s cubic-bezier(0.22, 1.5, 0.36, 1);
+}
+
+@keyframes pop-bounce {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.16, 0.9);
+  }
+  65% {
+    transform: scale(0.95, 1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Twinkling Stars & Clouds */
+.twinkle-star {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: twinkle 3.6s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+}
+
+.drift-cloud-slow {
+  animation: cloud-drift 38s linear infinite alternate;
+}
+
+@keyframes cloud-drift {
+  from {
+    transform: translateX(-35px);
+  }
+  to {
+    transform: translateX(45px);
+  }
+}
+
+/* Smiling Moon Blink */
+.moon-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: moon-blink 6.5s ease-in-out infinite;
+}
+
+@keyframes moon-blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.12);
+  }
+}
+
+/* Chimney Smoke */
+.smoke-puff {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: chimney-rise 4.4s ease-out infinite;
+}
+
+.smoke-2 {
+  animation-delay: 1.4s;
+}
+
+.smoke-3 {
+  animation-delay: 2.8s;
+}
+
+@keyframes chimney-rise {
+  0% {
+    opacity: 0.6;
+    transform: translate(0, 0) scale(0.75);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(18px, -48px) scale(1.65);
+  }
+}
+
+/* Haunted Manor Peeking Windows */
+.window-peek {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.22, 1.4, 0.36, 1);
+  pointer-events: none;
+}
+
+.manor-window.is-peeking .window-peek {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Bubbling Cauldron Flames & Brew */
+.cauldron-flame {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: flame-dance 0.9s ease-in-out infinite alternate;
+}
+
+.flame-inner {
+  animation-duration: 0.65s;
+}
+
+@keyframes flame-dance {
+  from {
+    transform: scaleY(0.92) skewX(-2deg);
+  }
+  to {
+    transform: scaleY(1.08) skewX(3deg);
+  }
+}
+
+.cauldron-brew {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: brew-simmer 2.1s ease-in-out infinite alternate;
+}
+
+@keyframes brew-simmer {
+  from {
+    transform: scaleX(0.97);
+    opacity: 0.9;
+  }
+  to {
+    transform: scaleX(1.03);
+    opacity: 1;
+  }
+}
+
+/* Whispering Tree Lantern Swing */
+.lantern-swing {
+  transform-box: fill-box;
+  transform-origin: top center;
+  animation: lantern-sway 4.2s ease-in-out infinite;
+}
+
+.lantern-group.is-swinging .lantern-swing {
+  animation: lantern-wild-sway 0.55s ease-in-out 3;
+}
+
+@keyframes lantern-sway {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes lantern-wild-sway {
+  0%,
+  100% {
+    transform: rotate(-16deg);
+  }
+  50% {
+    transform: rotate(16deg);
+  }
+}
+
+/* Friendly Spider Drop */
+.spider-body {
+  transition: transform 0.45s cubic-bezier(0.22, 1.4, 0.36, 1);
+}
+
+.spider-group.is-dropped .spider-body {
+  transform: translateY(58px);
+}
+
+/* Mystery Bushes Blinking Eyes */
+.bush-eyes {
+  opacity: 0.25;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.bush-group:hover .bush-eyes,
+.bush-group.is-peeking .bush-eyes {
+  opacity: 1;
+  transform: scale(1.14);
+}
+
+/* Silly Tombstone Skull Peek */
+.tombstone-skull {
+  transform: translateY(18px);
+  transition: transform 0.35s cubic-bezier(0.22, 1.4, 0.36, 1);
+}
+
+.tombstone-group.is-peeking .tombstone-skull {
+  transform: translateY(-28px) rotate(-6deg);
+}
+
+/* Autonomous World Events: Candy Cart & Bat Flock */
+.candy-cart {
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-200px, 735px);
+}
+
+.candy-cart.is-rolling {
+  pointer-events: auto;
+  animation: cart-roll 7s linear forwards;
+}
+
+@keyframes cart-roll {
+  0% {
+    opacity: 0;
+    transform: translate(-180px, 715px);
+  }
+  8% {
+    opacity: 1;
+  }
+  45% {
+    transform: translate(650px, 755px);
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(1780px, 730px);
+  }
+}
+
+.bat-flock {
+  opacity: 0;
+  transform: translate(-250px, 240px);
+}
+
+.bat-flock.is-flying {
+  animation: flock-fly 5.2s ease-in-out forwards;
+}
+
+.bat-wing {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wing-flap 0.26s ease-in-out infinite alternate;
+}
+
+@keyframes flock-fly {
+  0% {
+    opacity: 0;
+    transform: translate(-180px, 265px);
+  }
+  15% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(780px, 140px);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(1780px, 210px);
+  }
+}
+
+@keyframes wing-flap {
+  from {
+    transform: scaleY(0.75);
+  }
+  to {
+    transform: scaleY(1.18);
+  }
+}
+
+/* Reduced Motion Support (OS preference + in-app toggle) */
+:root[data-reduced-motion='true'] .twinkle-star,
+:root[data-reduced-motion='true'] .drift-cloud-slow,
+:root[data-reduced-motion='true'] .smoke-puff,
+:root[data-reduced-motion='true'] .cauldron-flame,
+:root[data-reduced-motion='true'] .cauldron-brew,
+:root[data-reduced-motion='true'] .lantern-swing,
+:root[data-reduced-motion='true'] .moon-eyes {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .twinkle-star,
+  .drift-cloud-slow,
+  .smoke-puff,
+  .cauldron-flame,
+  .cauldron-brew,
+  .lantern-swing,
+  .moon-eyes {
+    animation: none;
+  }
+}

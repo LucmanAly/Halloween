@@ -1,0 +1,17 @@
+{
+  "name": "boo-ville-halloween",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Boo-Ville: The Silly Spooky Night! An interactive Halloween world for kids under 10.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vite": "^6.4.6"
+  }
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boo-Ville: The Silly Spooky Night!</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap"
+    />
+  </head>
+  <body>
+    <!-- Welcome Curtain: unlocks Web Audio nicely for iPad, Android & Desktop -->
+    <section id="welcome-curtain" class="welcome-curtain" aria-labelledby="welcome-title">
+      <div class="welcome-card">
+        <div class="welcome-pumpkin" aria-hidden="true">🎃</div>
+        <h1 id="welcome-title" class="welcome-title">Boo-Ville</h1>
+        <p class="welcome-subtitle">The Silly Spooky Night!</p>
+        <p class="welcome-hint">
+          Tap the moon, knock on the door, pop rainbow bubbles, and discover 10 friendly Halloween secrets!
+        </p>
+        <button id="play-btn" type="button" class="btn-play">
+          <span>Tap to Play!</span>
+          <span aria-hidden="true">✨</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Interactive Game Stage (starts inert behind welcome curtain) -->
+    <main id="game-stage" class="stage" inert>
+      <header class="hud" aria-label="Game controls and progress">
+        <div class="hud-group">
+          <div class="hud-pill hud-candy" id="candy-pill" aria-label="Magic candy collected">
+            <span class="pill-icon" aria-hidden="true">🍬</span>
+            <span id="candy-count" class="pill-value">0</span>
+          </div>
+          <div class="hud-pill hud-secrets" aria-label="Courtyard secrets found">
+            <span class="pill-icon" aria-hidden="true">✨</span>
+            <span id="secrets-count" class="pill-value">0 / 10</span>
+          </div>
+        </div>
+
+        <div class="hud-group">
+          <button
+            id="surprise-btn"
+            type="button"
+            class="hud-btn hud-btn-magic"
+            aria-label="Trigger a spooky surprise event"
+          >
+            <span aria-hidden="true">🪄</span>
+            <span class="btn-label">Surprise!</span>
+          </button>
+          <button
+            id="mute-btn"
+            type="button"
+            class="hud-btn"
+            aria-label="Toggle sound and music"
+            aria-pressed="false"
+          >
+            <span id="mute-icon" aria-hidden="true">🔊</span>
+          </button>
+          <button
+            id="settings-btn"
+            type="button"
+            class="hud-btn"
+            aria-label="Open Boo-Ville settings"
+          >
+            <span aria-hidden="true">⚙️</span>
+          </button>
+        </div>
+      </header>
+
+      <div id="scene-layer" class="scene-layer"></div>
+      <canvas id="particle-canvas" class="particle-canvas" aria-hidden="true"></canvas>
+      <div id="speech-layer" class="speech-layer" aria-live="polite"></div>
+    </main>
+
+    <!-- Native Modal Settings Dialog -->
+    <dialog id="settings-dialog" class="settings-dialog" closedby="any" aria-labelledby="settings-heading">
+      <div class="settings-header">
+        <h2 id="settings-heading">Boo-Ville Settings</h2>
+        <form method="dialog">
+          <button type="submit" class="dialog-close-btn" aria-label="Close settings">✕</button>
+        </form>
+      </div>
+
+      <div class="settings-body">
+        <div class="setting-row">
+          <label for="music-volume" class="setting-label">🎵 Spooky Music</label>
+          <input id="music-volume" type="range" min="0" max="100" step="5" value="45" />
+        </div>
+
+        <div class="setting-row">
+          <label for="sfx-volume" class="setting-label">🔊 Sounds &amp; Voices</label>
+          <input id="sfx-volume" type="range" min="0" max="100" step="5" value="85" />
+        </div>
+
+        <div class="setting-row setting-toggle-row">
+          <label for="reduced-motion-toggle" class="setting-label">🌙 Gentle Motion</label>
+          <input id="reduced-motion-toggle" type="checkbox" class="kid-checkbox" />
+        </div>
+
+        <fieldset class="age-fieldset">
+          <legend class="setting-label">🎃 Play Style (for Creatures &amp; Games)</legend>
+          <div class="age-choices">
+            <button id="age-easy-btn" type="button" class="age-btn" aria-pressed="true">
+              Easy (Ages 3–6)
+            </button>
+            <button id="age-playful-btn" type="button" class="age-btn" aria-pressed="false">
+              Playful (Ages 6–9)
+            </button>
+          </div>
+        </fieldset>
+
+        <section class="coming-soon-box" aria-label="Upcoming Boo-Ville updates">
+          <p class="coming-soon-title">Coming Next in Phase 2 &amp; 3</p>
+          <ul class="coming-soon-list">
+            <li>👻 6 Talking Creatures with Real Lip-Sync Voices</li>
+            <li>🧪 Winnie's Wacky Potion Cauldron</li>
+            <li>🔦 Flashlight Hide-and-Seek &amp; Monster Dance Party</li>
+          </ul>
+        </section>
+
+        <div class="settings-footer">
+          <button id="reset-progress-btn" type="button" class="reset-btn">
+            Reset Candy &amp; Secrets
+          </button>
+          <form method="dialog">
+            <button type="submit" class="done-btn">Back to Boo-Ville</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
