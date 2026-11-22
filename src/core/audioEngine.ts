@@ -36,6 +36,9 @@ class AudioEngine {
   private readonly voiceCache = new Map<string, AudioBuffer>();
   private activeVoiceSource: AudioBufferSourceNode | null = null;
   private activeVoiceRaf = 0;
+  private voicePlaySeq = 0;
+  private voiceDucking = false;
+  private activeVoiceStopCleanup: (() => void) | null = null;
 
   constructor() {
     eventBus.on('audio:state', () => {
@@ -93,8 +96,9 @@ class AudioEngine {
     if (!this.ctx || !this.masterGain || !this.musicGain || !this.sfxGain || !this.voiceGain) return;
     const { muted, musicVolume, sfxVolume } = gameState.get().audio;
     const t = this.ctx.currentTime;
+    const musicScale = this.voiceDucking ? 0.08 : 0.24;
     this.masterGain.gain.setTargetAtTime(muted ? 0 : 1, t, 0.025);
-    this.musicGain.gain.setTargetAtTime(musicVolume * 0.24, t, 0.04);
+    this.musicGain.gain.setTargetAtTime(musicVolume * musicScale, t, 0.04);
     this.sfxGain.gain.setTargetAtTime(sfxVolume * 0.72, t, 0.025);
     this.voiceGain.gain.setTargetAtTime(sfxVolume * 0.95, t, 0.025);
   }
@@ -450,6 +454,49 @@ class AudioEngine {
     });
   }
 
+  playBoneRattle(): void {
+    if (!this.isReady() || !this.ctx || !this.sfxGain) return;
+    const freqs = [680, 860, 740, 990];
+    const baseTime = this.ctx.currentTime;
+    freqs.forEach((freq, i) => {
+      if (!this.ctx || !this.sfxGain) return;
+      const t = baseTime + i * 0.075;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.65, t + 0.055);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.34, t + 0.006);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+      osc.start(t);
+      osc.stop(t + 0.08);
+    });
+  }
+
+  playMonsterStomp(): void {
+    if (!this.isReady() || !this.ctx || !this.sfxGain) return;
+    const baseTime = this.ctx.currentTime;
+    [0, 0.16].forEach((offset, i) => {
+      if (!this.ctx || !this.sfxGain) return;
+      const t = baseTime + offset;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(i === 0 ? 128 : 112, t);
+      osc.frequency.exponentialRampToValueAtTime(52, t + 0.14);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.45, t + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+      osc.start(t);
+      osc.stop(t + 0.2);
+    });
+  }
+
   // --- Phase 2: Real Voice Playback & Real-Time Lip-Sync API ---
 
   getVoiceAmplitude(): number {
@@ -465,6 +512,7 @@ class AudioEngine {
   }
 
   stopVoice(): void {
+    this.voicePlaySeq += 1;
     if (this.activeVoiceRaf) {
       cancelAnimationFrame(this.activeVoiceRaf);
       this.activeVoiceRaf = 0;
@@ -477,12 +525,20 @@ class AudioEngine {
       }
       this.activeVoiceSource = null;
     }
+    const cleanup = this.activeVoiceStopCleanup;
+    this.activeVoiceStopCleanup = null;
+    cleanup?.();
+    if (this.voiceDucking) {
+      this.voiceDucking = false;
+      this.syncGains();
+    }
   }
 
   async playVoiceBuffer(url: string, onFrame?: (amp: number) => void): Promise<void> {
     if (!this.ctx || !this.voiceGain || !this.unlocked) return;
 
     this.stopVoice();
+    const seq = this.voicePlaySeq;
 
     let buffer = this.voiceCache.get(url);
     if (!buffer) {
@@ -491,12 +547,15 @@ class AudioEngine {
         throw new Error(`Failed to fetch voice clip: ${url}`);
       }
       const bytes = await response.arrayBuffer();
+      if (seq !== this.voicePlaySeq) return;
       buffer = await this.ctx.decodeAudioData(bytes);
       this.voiceCache.set(url, buffer);
     }
 
+    if (seq !== this.voicePlaySeq) return;
+
     return new Promise((resolve) => {
-      if (!this.ctx || !this.voiceGain) {
+      if (!this.ctx || !this.voiceGain || seq !== this.voicePlaySeq) {
         resolve();
         return;
       }
@@ -506,14 +565,12 @@ class AudioEngine {
       source.connect(this.voiceGain);
       this.activeVoiceSource = source;
 
-      let finished = false;
-      const pump = () => {
-        if (finished) return;
-        onFrame?.(this.getVoiceAmplitude());
-        this.activeVoiceRaf = requestAnimationFrame(pump);
-      };
+      this.voiceDucking = true;
+      this.syncGains();
 
-      source.onended = () => {
+      let finished = false;
+      const finalize = () => {
+        if (finished) return;
         finished = true;
         if (this.activeVoiceRaf) {
           cancelAnimationFrame(this.activeVoiceRaf);
@@ -522,10 +579,26 @@ class AudioEngine {
         if (this.activeVoiceSource === source) {
           this.activeVoiceSource = null;
         }
+        if (this.activeVoiceStopCleanup === finalize) {
+          this.activeVoiceStopCleanup = null;
+        }
+        if (seq === this.voicePlaySeq) {
+          this.voiceDucking = false;
+          this.syncGains();
+        }
         onFrame?.(0);
         resolve();
       };
 
+      this.activeVoiceStopCleanup = finalize;
+
+      const pump = () => {
+        if (finished || seq !== this.voicePlaySeq) return;
+        onFrame?.(this.getVoiceAmplitude());
+        this.activeVoiceRaf = requestAnimationFrame(pump);
+      };
+
+      source.onended = finalize;
       source.start();
       if (onFrame) {
         this.activeVoiceRaf = requestAnimationFrame(pump);

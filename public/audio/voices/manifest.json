@@ -1,0 +1,612 @@
+{
+  "version": 1,
+  "generatedAt": "2026-11-22T23:10:48.423096+00:00",
+  "lines": [
+    {
+      "id": "greet_1",
+      "creatureId": "pip",
+      "category": "greeting",
+      "text": "Hiya friend! Welcome to Boo-Ville! Tap around for spooky giggles!",
+      "emoji": "\ud83c\udf83",
+      "file": "audio/voices/pip/greet_1.mp3",
+      "durationMs": 5658
+    },
+    {
+      "id": "greet_2",
+      "creatureId": "pip",
+      "category": "greeting",
+      "text": "Happy Halloween! I saved the crunchiest candy corn just for you!",
+      "emoji": "\ud83c\udf6c",
+      "file": "audio/voices/pip/greet_2.mp3",
+      "durationMs": 4862
+    },
+    {
+      "id": "gag_1",
+      "creatureId": "pip",
+      "category": "tap_gag",
+      "text": "Boing, boing! Whoa, my pumpkin seeds are doing backflips!",
+      "emoji": "\ud83c\udf83",
+      "file": "audio/voices/pip/gag_1.mp3",
+      "durationMs": 4788
+    },
+    {
+      "id": "gag_2",
+      "creatureId": "pip",
+      "category": "tap_gag",
+      "text": "Hehe! That tickles my curly green stem!",
+      "emoji": "\ud83c\udf31",
+      "file": "audio/voices/pip/gag_2.mp3",
+      "durationMs": 3461
+    },
+    {
+      "id": "gag_3",
+      "creatureId": "pip",
+      "category": "tap_gag",
+      "text": "Knock knock! Who is there? Boo! Aww, do not cry, haha!",
+      "emoji": "\ud83d\ude04",
+      "file": "audio/voices/pip/gag_3.mp3",
+      "durationMs": 6214
+    },
+    {
+      "id": "banter_1_a",
+      "creatureId": "pip",
+      "category": "banter_a",
+      "text": "Hey Barnaby! Why did the skeleton cross the pumpkin patch?",
+      "emoji": "\ud83c\udf83",
+      "file": "audio/voices/pip/banter_1_a.mp3",
+      "durationMs": 4041,
+      "pairId": "banter-1"
+    },
+    {
+      "id": "banter_4_b",
+      "creatureId": "pip",
+      "category": "banter_b",
+      "text": "Ooh, ding-a-ling! You sound spook-tacular, Barnaby!",
+      "emoji": "\ud83c\udfb6",
+      "file": "audio/voices/pip/banter_4_b.mp3",
+      "durationMs": 4300,
+      "pairId": "banter-4"
+    },
+    {
+      "id": "react_1",
+      "creatureId": "pip",
+      "category": "world_react",
+      "text": "Whoa, look at that! Boo-Ville magic is sparkling everywhere!",
+      "emoji": "\u2728",
+      "file": "audio/voices/pip/react_1.mp3",
+      "durationMs": 4360
+    },
+    {
+      "id": "react_2",
+      "creatureId": "pip",
+      "category": "world_react",
+      "text": "Yippee! Catch all the goodies before they float away!",
+      "emoji": "\ud83c\udf89",
+      "file": "audio/voices/pip/react_2.mp3",
+      "durationMs": 3623
+    },
+    {
+      "id": "hint_1",
+      "creatureId": "pip",
+      "category": "hint",
+      "text": "Psst! I am hiding right where the orange pumpkins glow!",
+      "emoji": "\ud83d\udd26",
+      "file": "audio/voices/pip/hint_1.mp3",
+      "durationMs": 4103
+    },
+    {
+      "id": "hint_2",
+      "creatureId": "pip",
+      "category": "hint",
+      "text": "Knock knock! Somebody round and orange is waiting by the door!",
+      "emoji": "\ud83d\udeaa",
+      "file": "audio/voices/pip/hint_2.mp3",
+      "durationMs": 4360
+    },
+    {
+      "id": "greet_1",
+      "creatureId": "boobell",
+      "category": "greeting",
+      "text": "Ooo-ooo! Hi little friend! I am Boo-Bell the friendly ghost!",
+      "emoji": "\ud83d\udc7b",
+      "file": "audio/voices/boobell/greet_1.mp3",
+      "durationMs": 5383
+    },
+    {
+      "id": "greet_2",
+      "creatureId": "boobell",
+      "category": "greeting",
+      "text": "Float on in! Everything in Boo-Ville loves a silly tickle!",
+      "emoji": "\ud83e\udee7",
+      "file": "audio/voices/boobell/greet_2.mp3",
+      "durationMs": 3737
+    },
+    {
+      "id": "gag_1",
+      "creatureId": "boobell",
+      "category": "tap_gag",
+      "text": "Peek-a-boo! Hehe, did I make you giggle?",
+      "emoji": "\ud83d\udc7b",
+      "file": "audio/voices/boobell/gag_1.mp3",
+      "durationMs": 3012
+    },
+    {
+      "id": "gag_2",
+      "creatureId": "boobell",
+      "category": "tap_gag",
+      "text": "Whoopsie! I turned invisible for a second! Now you see me!",
+      "emoji": "\u2728",
+      "file": "audio/voices/boobell/gag_2.mp3",
+      "durationMs": 4891
+    },
+    {
+      "id": "gag_3",
+      "creatureId": "boobell",
+      "category": "tap_gag",
+      "text": "Booo! Just kidding, I only scare grumpy broccoli!",
+      "emoji": "\ud83e\udd66",
+      "file": "audio/voices/boobell/gag_3.mp3",
+      "durationMs": 3790
+    },
+    {
+      "id": "banter_2_a",
+      "creatureId": "boobell",
+      "category": "banter_a",
+      "text": "Peek-a-boo, Frankie! Did I make your hair stand up?",
+      "emoji": "\ud83d\udc7b",
+      "file": "audio/voices/boobell/banter_2_a.mp3",
+      "durationMs": 3590,
+      "pairId": "banter-2"
+    },
+    {
+      "id": "banter_6_b",
+      "creatureId": "boobell",
+      "category": "banter_b",
+      "text": "Ooh, you are on, little bat! Ready, set, floaty-boo!",
+      "emoji": "\ud83c\udf19",
+      "file": "audio/voices/boobell/banter_6_b.mp3",
+      "durationMs": 4666,
+      "pairId": "banter-6"
+    },
+    {
+      "id": "react_1",
+      "creatureId": "boobell",
+      "category": "world_react",
+      "text": "Wheee! Rainbow bubbles are floating through my ghost tummy!",
+      "emoji": "\ud83e\udee7",
+      "file": "audio/voices/boobell/react_1.mp3",
+      "durationMs": 3539
+    },
+    {
+      "id": "react_2",
+      "creatureId": "boobell",
+      "category": "world_react",
+      "text": "Ooh, make a wish upon those shiny Halloween stars!",
+      "emoji": "\ud83c\udf20",
+      "file": "audio/voices/boobell/react_2.mp3",
+      "durationMs": 2944
+    },
+    {
+      "id": "hint_1",
+      "creatureId": "boobell",
+      "category": "hint",
+      "text": "Hehe, shine your flashlight up high! I am floating like a cloud!",
+      "emoji": "\ud83d\udd26",
+      "file": "audio/voices/boobell/hint_1.mp3",
+      "durationMs": 4308
+    },
+    {
+      "id": "hint_2",
+      "creatureId": "boobell",
+      "category": "hint",
+      "text": "Ooo-ooo! Guess who is hiding behind the front door with a sparkly bow!",
+      "emoji": "\ud83c\udf80",
+      "file": "audio/voices/boobell/hint_2.mp3",
+      "durationMs": 4679
+    },
+    {
+      "id": "greet_1",
+      "creatureId": "winnie",
+      "category": "greeting",
+      "text": "Hello there, young wizard! Ready for some silly Halloween magic?",
+      "emoji": "\ud83e\uddd9\u200d\u2640\ufe0f",
+      "file": "audio/voices/winnie/greet_1.mp3",
+      "durationMs": 4125
+    },
+    {
+      "id": "greet_2",
+      "creatureId": "winnie",
+      "category": "greeting",
+      "text": "Double bubble, giggles and trouble! Welcome to my courtyard!",
+      "emoji": "\ud83e\uddea",
+      "file": "audio/voices/winnie/greet_2.mp3",
+      "durationMs": 3806
+    },
+    {
+      "id": "gag_1",
+      "creatureId": "winnie",
+      "category": "tap_gag",
+      "text": "Alakazam! Watch my crooked witch hat spin with stars!",
+      "emoji": "\ud83c\udf1f",
+      "file": "audio/voices/winnie/gag_1.mp3",
+      "durationMs": 3626
+    },
+    {
+      "id": "gag_2",
+      "creatureId": "winnie",
+      "category": "tap_gag",
+      "text": "Hocus pocus, extra focus! Oops, I sneezed rainbow glitter!",
+      "emoji": "\u2728",
+      "file": "audio/voices/winnie/gag_2.mp3",
+      "durationMs": 4624
+    },
+    {
+      "id": "gag_3",
+      "creatureId": "winnie",
+      "category": "tap_gag",
+      "text": "Stir it left, stir it right! What a wonderfully wacky brew!",
+      "emoji": "\ud83e\ude84",
+      "file": "audio/voices/winnie/gag_3.mp3",
+      "durationMs": 4031
+    },
+    {
+      "id": "banter_3_a",
+      "creatureId": "winnie",
+      "category": "banter_a",
+      "text": "Bitey dear, did you nibble my glowing moon cheese again?",
+      "emoji": "\ud83e\uddc0",
+      "file": "audio/voices/winnie/banter_3_a.mp3",
+      "durationMs": 3026,
+      "pairId": "banter-3"
+    },
+    {
+      "id": "banter_5_b",
+      "creatureId": "winnie",
+      "category": "banter_b",
+      "text": "Ooh, extra sprinkles and giggle fizz coming right up, Frankie!",
+      "emoji": "\ud83e\uddea",
+      "file": "audio/voices/winnie/banter_5_b.mp3",
+      "durationMs": 4013,
+      "pairId": "banter-5"
+    },
+    {
+      "id": "react_1",
+      "creatureId": "winnie",
+      "category": "world_react",
+      "text": "Marvelous! My cauldron bubbles are dancing in the moonlight!",
+      "emoji": "\ud83e\uddea",
+      "file": "audio/voices/winnie/react_1.mp3",
+      "durationMs": 3627
+    },
+    {
+      "id": "react_2",
+      "creatureId": "winnie",
+      "category": "world_react",
+      "text": "Oh my broomstick! Look at all those magical treats!",
+      "emoji": "\ud83c\udf6c",
+      "file": "audio/voices/winnie/react_2.mp3",
+      "durationMs": 3307
+    },
+    {
+      "id": "hint_1",
+      "creatureId": "winnie",
+      "category": "hint",
+      "text": "Tee-hee! Look near the green glowing cauldron to spot my pointy hat!",
+      "emoji": "\ud83d\udd26",
+      "file": "audio/voices/winnie/hint_1.mp3",
+      "durationMs": 4024
+    },
+    {
+      "id": "hint_2",
+      "creatureId": "winnie",
+      "category": "hint",
+      "text": "A little witch with sparkly glasses is waiting behind the door!",
+      "emoji": "\ud83e\uddd9\u200d\u2640\ufe0f",
+      "file": "audio/voices/winnie/hint_2.mp3",
+      "durationMs": 3370
+    },
+    {
+      "id": "greet_1",
+      "creatureId": "barnaby",
+      "category": "greeting",
+      "text": "Rattle-clack! Good evening, buddy! Shake a leg with old Barnaby!",
+      "emoji": "\ud83d\udc80",
+      "file": "audio/voices/barnaby/greet_1.mp3",
+      "durationMs": 5126
+    },
+    {
+      "id": "greet_2",
+      "creatureId": "barnaby",
+      "category": "greeting",
+      "text": "Welcome, welcome! Have you tapped the musical fence yet?",
+      "emoji": "\ud83c\udfb5",
+      "file": "audio/voices/barnaby/greet_2.mp3",
+      "durationMs": 3626
+    },
+    {
+      "id": "gag_1",
+      "creatureId": "barnaby",
+      "category": "tap_gag",
+      "text": "Whoops-a-daisy! My knees fell off! Snap! Back together!",
+      "emoji": "\ud83e\uddb4",
+      "file": "audio/voices/barnaby/gag_1.mp3",
+      "durationMs": 5604
+    },
+    {
+      "id": "gag_2",
+      "creatureId": "barnaby",
+      "category": "tap_gag",
+      "text": "Oh my funny bones! That tap tickled right down to my toes!",
+      "emoji": "\ud83d\udc80",
+      "file": "audio/voices/barnaby/gag_2.mp3",
+      "durationMs": 3798
+    },
+    {
+      "id": "gag_3",
+      "creatureId": "barnaby",
+      "category": "tap_gag",
+      "text": "Clink clank! Listen to my spooky skeleton xylophone belly!",
+      "emoji": "\ud83c\udfb6",
+      "file": "audio/voices/barnaby/gag_3.mp3",
+      "durationMs": 3920
+    },
+    {
+      "id": "banter_1_b",
+      "creatureId": "barnaby",
+      "category": "banter_b",
+      "text": "Hehe! To get to the funny-bone shop! Rattle-clack!",
+      "emoji": "\ud83e\uddb4",
+      "file": "audio/voices/barnaby/banter_1_b.mp3",
+      "durationMs": 4403,
+      "pairId": "banter-1"
+    },
+    {
+      "id": "banter_4_a",
+      "creatureId": "barnaby",
+      "category": "banter_a",
+      "text": "Listen closely, Pip! I practiced my rib xylophone solo all night!",
+      "emoji": "\ud83c\udfb5",
+      "file": "audio/voices/barnaby/banter_4_a.mp3",
+      "durationMs": 4419,
+      "pairId": "banter-4"
+    },
+    {
+      "id": "react_1",
+      "creatureId": "barnaby",
+      "category": "world_react",
+      "text": "My jaw dropped right off! What a fantastic Halloween surprise!",
+      "emoji": "\ud83d\udc80",
+      "file": "audio/voices/barnaby/react_1.mp3",
+      "durationMs": 4127
+    },
+    {
+      "id": "react_2",
+      "creatureId": "barnaby",
+      "category": "world_react",
+      "text": "Rattle-tattle-yay! That makes me want to do a skeleton jig!",
+      "emoji": "\ud83d\udc83",
+      "file": "audio/voices/barnaby/react_2.mp3",
+      "durationMs": 3825
+    },
+    {
+      "id": "hint_1",
+      "creatureId": "barnaby",
+      "category": "hint",
+      "text": "Clack clack! Follow the sound of rattling bones near the fence!",
+      "emoji": "\ud83d\udd26",
+      "file": "audio/voices/barnaby/hint_1.mp3",
+      "durationMs": 3962
+    },
+    {
+      "id": "hint_2",
+      "creatureId": "barnaby",
+      "category": "hint",
+      "text": "Tap-tap! Somebody super bony and smiley is knocking back!",
+      "emoji": "\ud83e\uddb4",
+      "file": "audio/voices/barnaby/hint_2.mp3",
+      "durationMs": 3938
+    },
+    {
+      "id": "greet_1",
+      "creatureId": "frankie",
+      "category": "greeting",
+      "text": "Hiii friend! Frankie happy you came to play in Boo-Ville!",
+      "emoji": "\ud83e\udddf",
+      "file": "audio/voices/frankie/greet_1.mp3",
+      "durationMs": 4411
+    },
+    {
+      "id": "greet_2",
+      "creatureId": "frankie",
+      "category": "greeting",
+      "text": "Hello! Frankie give biggest, gentlest monster high-five!",
+      "emoji": "\ud83d\udd90\ufe0f",
+      "file": "audio/voices/frankie/greet_2.mp3",
+      "durationMs": 4985
+    },
+    {
+      "id": "gag_1",
+      "creatureId": "frankie",
+      "category": "tap_gag",
+      "text": "Stomp, stomp! Frankie do happy marshmallow monster dance!",
+      "emoji": "\ud83d\udc9a",
+      "file": "audio/voices/frankie/gag_1.mp3",
+      "durationMs": 5398
+    },
+    {
+      "id": "gag_2",
+      "creatureId": "frankie",
+      "category": "tap_gag",
+      "text": "Mmm, candy corn! Frankie think you are sweeter than cupcakes!",
+      "emoji": "\ud83e\uddc1",
+      "file": "audio/voices/frankie/gag_2.mp3",
+      "durationMs": 5241
+    },
+    {
+      "id": "gag_3",
+      "creatureId": "frankie",
+      "category": "tap_gag",
+      "text": "Boop! Did you just boop Frankie's tiny golden neck bolts?",
+      "emoji": "\u26a1",
+      "file": "audio/voices/frankie/gag_3.mp3",
+      "durationMs": 4434
+    },
+    {
+      "id": "banter_2_b",
+      "creatureId": "frankie",
+      "category": "banter_b",
+      "text": "Whoa! You tickled my bolts! Haha, do it again!",
+      "emoji": "\u26a1",
+      "file": "audio/voices/frankie/banter_2_b.mp3",
+      "durationMs": 5334,
+      "pairId": "banter-2"
+    },
+    {
+      "id": "banter_5_a",
+      "creatureId": "frankie",
+      "category": "banter_a",
+      "text": "Winnie, can you brew a giant cup of candy corn soup?",
+      "emoji": "\ud83c\udf6c",
+      "file": "audio/voices/frankie/banter_5_a.mp3",
+      "durationMs": 3335,
+      "pairId": "banter-5"
+    },
+    {
+      "id": "react_1",
+      "creatureId": "frankie",
+      "category": "world_react",
+      "text": "Oooh! Look at the candy cart! Frankie love snacks!",
+      "emoji": "\ud83d\uded2",
+      "file": "audio/voices/frankie/react_1.mp3",
+      "durationMs": 5362
+    },
+    {
+      "id": "react_2",
+      "creatureId": "frankie",
+      "category": "world_react",
+      "text": "Yay! Sparkles everywhere! Frankie cheering so big!",
+      "emoji": "\ud83c\udf1f",
+      "file": "audio/voices/frankie/react_2.mp3",
+      "durationMs": 5930
+    },
+    {
+      "id": "hint_1",
+      "creatureId": "frankie",
+      "category": "hint",
+      "text": "Psst! Shine light on big green gentle monster near the bushes!",
+      "emoji": "\ud83d\udd26",
+      "file": "audio/voices/frankie/hint_1.mp3",
+      "durationMs": 5129
+    },
+    {
+      "id": "hint_2",
+      "creatureId": "frankie",
+      "category": "hint",
+      "text": "Thump thump! Huge friendly footsteps waiting right behind the door!",
+      "emoji": "\ud83d\udc9a",
+      "file": "audio/voices/frankie/hint_2.mp3",
+      "durationMs": 4994
+    },
+    {
+      "id": "greet_1",
+      "creatureId": "bitey",
+      "category": "greeting",
+      "text": "Eee-hee! Hiya! I am Bitey! Look up, look up!",
+      "emoji": "\ud83e\udd87",
+      "file": "audio/voices/bitey/greet_1.mp3",
+      "durationMs": 5071
+    },
+    {
+      "id": "greet_2",
+      "creatureId": "bitey",
+      "category": "greeting",
+      "text": "Squeak-squeak! Best spooky night ever! Let's flap and fly!",
+      "emoji": "\ud83c\udf19",
+      "file": "audio/voices/bitey/greet_2.mp3",
+      "durationMs": 4469
+    },
+    {
+      "id": "gag_1",
+      "creatureId": "bitey",
+      "category": "tap_gag",
+      "text": "Loop-de-loop! Whoa, the sky looks extra funny upside-down!",
+      "emoji": "\ud83e\udd87",
+      "file": "audio/voices/bitey/gag_1.mp3",
+      "durationMs": 3599
+    },
+    {
+      "id": "gag_2",
+      "creatureId": "bitey",
+      "category": "tap_gag",
+      "text": "Squeak! Catch a falling sparkly star from my tiny wings!",
+      "emoji": "\u2b50",
+      "file": "audio/voices/bitey/gag_2.mp3",
+      "durationMs": 3493
+    },
+    {
+      "id": "gag_3",
+      "creatureId": "bitey",
+      "category": "tap_gag",
+      "text": "Flap, flap, wiggle ears! Bat snacks taste best at midnight!",
+      "emoji": "\ud83c\udf47",
+      "file": "audio/voices/bitey/gag_3.mp3",
+      "durationMs": 4096
+    },
+    {
+      "id": "banter_3_b",
+      "creatureId": "bitey",
+      "category": "banter_b",
+      "text": "Eee-hee! Just a teeny tiny bat bite! It tasted sparkly!",
+      "emoji": "\ud83e\uddc0",
+      "file": "audio/voices/bitey/banter_3_b.mp3",
+      "durationMs": 4719,
+      "pairId": "banter-3"
+    },
+    {
+      "id": "banter_6_a",
+      "creatureId": "bitey",
+      "category": "banter_a",
+      "text": "Hey Boo-Bell! Bet I can swoop around the smiling moon faster than you!",
+      "emoji": "\ud83e\udd87",
+      "file": "audio/voices/bitey/banter_6_a.mp3",
+      "durationMs": 3759,
+      "pairId": "banter-6"
+    },
+    {
+      "id": "react_1",
+      "creatureId": "bitey",
+      "category": "world_react",
+      "text": "Squeak-wheee! Look at my bat cousins zooming across the stars!",
+      "emoji": "\ud83e\udd87",
+      "file": "audio/voices/bitey/react_1.mp3",
+      "durationMs": 3458
+    },
+    {
+      "id": "react_2",
+      "creatureId": "bitey",
+      "category": "world_react",
+      "text": "Ooh shiny! Bitey wants to pop every single bubble!",
+      "emoji": "\ud83e\udee7",
+      "file": "audio/voices/bitey/react_2.mp3",
+      "durationMs": 3047
+    },
+    {
+      "id": "hint_1",
+      "creatureId": "bitey",
+      "category": "hint",
+      "text": "Squeak! Check the high tree branches with your flashlight!",
+      "emoji": "\ud83d\udd26",
+      "file": "audio/voices/bitey/hint_1.mp3",
+      "durationMs": 3116
+    },
+    {
+      "id": "hint_2",
+      "creatureId": "bitey",
+      "category": "hint",
+      "text": "Flap-flap! Tiny purple ears are wiggling behind the front door!",
+      "emoji": "\ud83e\udd87",
+      "file": "audio/voices/bitey/hint_2.mp3",
+      "durationMs": 3602
+    }
+  ]
+}

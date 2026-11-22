@@ -1,9 +1,12 @@
 import './styles/tokens.css';
 import './styles/layout.css';
 import './styles/scene.css';
+import './styles/creatures.css';
 
 import { eventBus } from './core/eventBus.ts';
 import { gameState } from './core/state.ts';
+import { BanterDirector } from './creatures/banterDirector.ts';
+import { voiceManager } from './creatures/voiceManager.ts';
 import { initHud } from './ui/hud.ts';
 import { initSettingsDialog } from './ui/settingsDialog.ts';
 import { initWelcomeCurtain } from './ui/welcomeCurtain.ts';
@@ -70,11 +73,13 @@ function bootstrap(): void {
 
   new SecretsController(stage, courtyardSvg, particles);
   const worldEvents = new WorldEventsDirector(courtyardSvg, particles);
+  const banterDirector = new BanterDirector(stage, courtyardSvg, particles, voiceManager);
+  void voiceManager.load();
 
   initSpeechLayer();
   const settings = initSettingsDialog();
   initHud(worldEvents, settings.open);
-  initWelcomeCurtain(particles, worldEvents);
+  initWelcomeCurtain(particles, worldEvents, banterDirector);
 }
 
 bootstrap();

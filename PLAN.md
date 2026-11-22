@@ -25,17 +25,17 @@ All 6 creatures live inside the SVG courtyard (`#creature-stage-layer`), follow 
 
 | ID | Name | Visual Silhouette & Rig Parts | Personality & Tap Gag | Voice Style & Neural TTS Plan | Sample Spoken Lines |
 |---|---|---|---|---|---|
-| `pip` | **Pip the Pumpkin** | Round glowing orange jack-o'-lantern kid with green curly stem, stick legs, expressive eyes, 5-shape mouth, top hat slot | Cheerful bouncy host who loves candy corn & telling goofy puns | Bright, cheerful cartoon-kid voice (`en-US-AnaNeural` or pitched `en-US-JustinNeural` / cheerful child tone) | *"Hiya friend! Welcome to Boo-Ville!"*, *"Knock knock! Who's there? Boo! Don't cry, haha!"* |
-| `boobell` | **Boo-Bell the Ghost** | Soft glowing mint-white teardrop ghost with rosy cheeks, sparkly bow, floating tail, eyes, 5-shape mouth | Shy-giggly floater who turns semi-transparent and pops out yelling *"Booo! Hehe!"* | Airy, playful giggly voice + gentle echo/reverb (`en-US-JennyNeural` slightly bright + soft chorus/echo) | *"Peek-a-boo! Hehe, did I tickle you?"*, *"Ooh, look at those rainbow bubbles!"* |
-| `winnie` | **Winnie the Giggle-Witch** | Cozy purple-cloak kid witch with oversized crooked starry hat, freckles, round glasses, eyes, 5-shape mouth | Enthusiastic potion brewer hovering near the cauldron | Warm, theatrical story-witch voice (`en-GB-MaisieNeural` or `en-US-AriaNeural` expressive) | *"Double bubble, giggles and trouble!"*, *"Ooh! Let's brew something wacky!"* |
-| `barnaby` | **Barnaby the Skeleton** | Friendly rounded-bone skeleton with big grin, striped scarf, eyes, clicking jaw mouth | When tapped, topples playfully into a rattling bone pile, then snaps back playing his ribs like a xylophone | Goofy, dramatic cartoon voice + crisp wooden marimba clack SFX (`en-US-GuyNeural` / `en-US-ChristopherNeural` cheerful pitch) | *"Oh my funny bones!"*, *"Check out this spooky rib solo!"* |
-| `frankie` | **Frankie the Gentle Monster** | Chunky pastel-green marshmallow-hearted gentle giant with tiny golden bolts, goofy hair tuft, eyes, 5-shape mouth | Loves flowers, dancing, and sharing candy; gives big gentle stomps that launch confetti | Deep, slow, warm goofy giant voice (`en-US-DavisNeural` / `en-US-SteffanNeural` pitched gently down) | *"Frankie like candy! Yum yum!"*, *"Ooh! Dancing time! Stomp stomp!"* |
-| `bitey` | **Bitey the Tiny Bat** | Chubby plum-purple bat with big floppy ears, tiny cute fangs, flapping wings, eyes, 5-shape mouth | Swoops across the upper courtyard and hangs upside-down from tree branches dropping sparkly stars | Fast, chirpy, enthusiastic squeaky sidekick (`en-US-AnaNeural` slightly sped up / pitch-lifted) | *"Eee-hee! Upside-down looks funny!"*, *"Catch a sparkly star!"* |
+| `pip` | **Pip the Pumpkin** | Round glowing orange jack-o'-lantern kid with curly green stem, boots, waving arms, tracking eyes, 5-shape mouth, hat slot | Cheerful bouncy host who bounces & giggles when tapped | Bright, cheerful cartoon-kid voice (`en-US-AnaNeural`, `rate="+6%"`, `pitch="+4Hz"`) | *"Hiya friend! Welcome to Boo-Ville!"*, *"Knock knock! Who is there? Boo!"* |
+| `boobell` | **Boo-Bell the Ghost** | Soft glowing mint-white teardrop ghost with rosy cheeks, purple hair bow, floating nub arms, tracking eyes, 5-shape mouth | Shy-giggly floater who fades & pops back out yelling *"Peek-a-boo!"* | Airy, playful giggly voice + ghostly `ffmpeg` shimmer (`en-US-JennyNeural`, `aecho`) | *"Peek-a-boo! Hehe, did I make you giggle?"*, *"Float on in!"* |
+| `winnie` | **Winnie the Giggle-Witch** | Cozy purple-cloak kid witch with crooked starry hat, auburn hair, mint round glasses, star wand, tracking eyes, 5-shape mouth | Enthusiastic potion brewer whose starry hat spins with glitter | Warm, theatrical story-witch voice (`en-GB-SoniaNeural`, `rate="+4%"`, `pitch="+12Hz"`) | *"Double bubble, giggles and trouble!"*, *"Alakazam!"* |
+| `barnaby` | **Barnaby the Skeleton** | Friendly ivory skeleton with purple/gold scarf, colorful xylophone ribs, tracking eyes, 5-shape mouth | Hop-rattles his skull & xylophone ribs with crisp wooden clack SFX | Goofy, dramatic cartoon voice (`en-US-GuyNeural`, `rate="+8%"`, `pitch="+16Hz"`) + `playBoneRattle()` | *"Oh my funny bones!"*, *"Check out my rib xylophone solo!"* |
+| `frankie` | **Frankie the Gentle Monster** | Chunky pastel-green gentle giant with purple overalls, golden bolts, zig-zag hair, tracking eyes, 5-shape mouth | Gives big happy marshmallow stomps launching confetti | Deep, slow, warm goofy giant voice (`en-US-ChristopherNeural`, `bass=g=4:f=140`) + `playMonsterStomp()` | *"Frankie happy you came to play!"*, *"Stomp, stomp!"* |
+| `bitey` | **Bitey the Tiny Bat** | Chubby plum-purple bat with floppy pink ears, tiny cute fangs, flapping wings, tracking eyes, 5-shape mouth | Does mid-air loop-de-loops across the sky & squeaks happily | Fast, chirpy, squeaky sidekick (`en-US-AriaNeural` + `ffmpeg` pitch lift) | *"Eee-hee! Upside-down looks funny!"*, *"Catch a sparkly star!"* |
 
 ### How "Real-Looking & Real-Sounding" Voices Work on GitHub Pages
 Because Boo-Ville runs **100% statically on GitHub Pages** with zero API keys or servers:
 1. **Offline Build-Time Neural TTS Generation (`scripts/generate_voices.py`):**
-   - Uses Python + **`edge-tts`** (free Microsoft neural voices, no API key needed during build) plus lightweight audio shaping (`ffmpeg` / `pydub` if available, or clean rate/pitch SSML + subtle reverb) to generate **60–80 crisp short `.mp3` voice clips** (~2–3 MB total) into `public/audio/voices/<creatureId>/<lineId>.mp3`.
+   - Uses Python + **`edge-tts`** (free Microsoft neural voices, no API key needed during build) plus `ffmpeg` silence trimming, character DSP shaping, and `loudnorm` to generate **66 crisp short `.mp3` voice clips** (`~2.2 MB` total) into `public/audio/voices/<creatureId>/<lineId>.mp3`.
    - Emits `public/audio/voices/manifest.json` mapping `{ creatureId, lineId, category, text, file, durationMs }` so captions, lip-sync, and mini-games stay perfectly synchronized.
    - This guarantees identical studio-clear expressive voices across **iPad Safari, Android Chrome, macOS, and Windows** (unlike `window.speechSynthesis`, which sounds robotic and breaks on mobile browsers).
 2. **Real-Time 60fps Animated Lip-Sync (`AudioEngine` + `CreatureRig`):**
@@ -133,7 +133,8 @@ Halloween/
     ├── styles/
     │   ├── tokens.css             # Palette, radii, shadows, fluid spacing
     │   ├── layout.css             # 100dvh full-bleed stage, HUD, dialog, curtain
-    │   └── scene.css              # Courtyard SVG keyframes & speech bubbles
+    │   ├── scene.css              # Courtyard SVG keyframes & speech bubbles
+    │   └── creatures.css          # Phase 2: creature locomotion, lip-sync & tap gags
     ├── core/
     │   ├── eventBus.ts            # Typed pub/sub event bus
     │   ├── state.ts               # localStorage save schema (`booville_save_v1`)

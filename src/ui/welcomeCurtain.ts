@@ -1,11 +1,12 @@
 import { audioEngine } from '../core/audioEngine.ts';
-import { eventBus } from '../core/eventBus.ts';
+import { BanterDirector } from '../creatures/banterDirector.ts';
 import { ParticleCanvas } from '../world/particleCanvas.ts';
 import { WorldEventsDirector } from '../world/worldEvents.ts';
 
 export function initWelcomeCurtain(
   particles: ParticleCanvas,
   worldEvents: WorldEventsDirector,
+  banterDirector: BanterDirector,
 ): void {
   const curtain = document.getElementById('welcome-curtain');
   const playBtn = document.getElementById('play-btn');
@@ -38,15 +39,8 @@ export function initWelcomeCurtain(
     const cy = window.innerHeight * 0.45;
     particles.spawnBurst(cx, cy, ['#ffd166', '#ff7eb6', '#6ef3b3', '#b892ff'], 24, 'star');
 
-    eventBus.emit('world:speech', {
-      emoji: '🎃',
-      text: 'Welcome to Boo-Ville! Tap around to find 10 secrets!',
-      x: cx,
-      y: cy,
-      color: '#ffd166',
-      durationMs: 3600,
-    });
-
     worldEvents.start();
+    banterDirector.start();
+    banterDirector.greetOnEnter();
   });
 }
