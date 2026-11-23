@@ -12,7 +12,7 @@ export class ActivityManager {
   private readonly sceneLayer: HTMLElement | null;
   private readonly dockEl: HTMLElement | null;
   private activeId: ActivityId | null = null;
-  private lastInvoker: HTMLElement | null = null;
+  private lastInvoker: HTMLButtonElement | SVGGElement | null = null;
 
   constructor(deps: ActivityDeps) {
     this.deps = deps;
@@ -48,7 +48,7 @@ export class ActivityManager {
         const id = btn.dataset.activity as ActivityId | undefined;
         if (id) {
           audioEngine.playBubblePop(2);
-          this.openActivity(id);
+          this.openActivity(id, btn);
         }
       });
     });
@@ -61,31 +61,44 @@ export class ActivityManager {
         e.stopPropagation();
         if (this.deps.particles.tryPopAt(e.clientX, e.clientY)) return;
         audioEngine.playBubblePop(2);
-        this.openActivity(id);
+        this.openActivity(id, badge);
       });
 
       badge.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           audioEngine.playBubblePop(2);
-          this.openActivity(id);
+          this.openActivity(id, badge);
         }
       });
     });
 
     window.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape' || !this.activeId) return;
+      if (!this.activeId) return;
       const settingsDialog = document.getElementById('settings-dialog') as HTMLDialogElement | null;
       if (settingsDialog?.open) return;
-      this.closeActive();
+      if (e.key === 'Escape') this.closeActive();
+      if (e.key === 'Tab') this.keepFocusInDialog(e);
     });
   }
 
-  openActivity(id: ActivityId): void {
-    if (this.activeId === id) return;
-    if (!this.activeId && document.activeElement instanceof HTMLElement) {
-      this.lastInvoker = document.activeElement;
+  private keepFocusInDialog(event: KeyboardEvent): void {
+    const dialog = this.deps.activityLayer.querySelector('[aria-modal="true"]');
+    if (!dialog) return;
+    const buttons = Array.from(dialog.querySelectorAll<HTMLElement>('button:not(:disabled)'))
+      .filter((button) => button.getClientRects().length > 0);
+    if (buttons.length === 0) return;
+    const index = buttons.indexOf(document.activeElement as HTMLElement);
+    const beyondEdge = event.shiftKey ? index <= 0 : index === buttons.length - 1 || index === -1;
+    if (beyondEdge) {
+      event.preventDefault();
+      buttons[event.shiftKey ? buttons.length - 1 : 0].focus();
     }
+  }
+
+  openActivity(id: ActivityId, invoker: HTMLButtonElement | SVGGElement): void {
+    if (this.activeId === id) return;
+    if (!this.activeId) this.lastInvoker = invoker;
     this.closeActive(false);
 
     this.activeId = id;
@@ -99,6 +112,9 @@ export class ActivityManager {
     this.syncDockPressed(id);
     eventBus.emit('activity:change', { active: id });
     this.controllers[id].open();
+    if (!this.deps.activityLayer.contains(document.activeElement)) {
+      this.deps.activityLayer.querySelector<HTMLButtonElement>('button')?.focus();
+    }
   }
 
   closeActive(restoreFocus = true): void {

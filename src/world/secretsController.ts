@@ -139,6 +139,7 @@ export class SecretsController {
   private bindEvents(): void {
     // Allow popping floating canvas bubbles without blocking SVG secrets.
     this.stage.addEventListener('pointerdown', (e) => {
+      if (e.target instanceof Element && e.target.closest('button, .activity-layer, .stage-fx-layer')) return;
       const popped = this.particles.tryPopAt(e.clientX, e.clientY);
       if (!popped) {
         this.particles.spawnTrailSparkle(e.clientX, e.clientY);

@@ -114,12 +114,7 @@ export class BanterDirector {
       interactive?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          const box = instance.root.getBoundingClientRect();
-          this.onCreatureActivated(
-            config.id,
-            box.left + box.width * 0.5,
-            box.top + box.height * 0.4,
-          );
+          this.talkTo(config.id);
         }
       });
     }
@@ -191,6 +186,15 @@ export class BanterDirector {
     return { x: mapped.x, y: mapped.y };
   }
 
+  talkTo(id: CreatureId): void {
+    const actor = this.actors.get(id);
+    if (!actor) return;
+    const box = actor.instance.root.getBoundingClientRect();
+    const stage = this.stage.getBoundingClientRect();
+    const x = Math.max(stage.left + 24, Math.min(stage.right - 24, box.left + box.width / 2));
+    this.onCreatureActivated(id, x, box.top + box.height * .4);
+  }
+
   private onCreatureActivated(id: CreatureId, clientX: number, clientY: number): void {
     if (this.tapInterceptor?.(id, clientX, clientY)) {
       return;
@@ -228,7 +232,7 @@ export class BanterDirector {
     );
 
     const lastCandy = this.candyCooldowns.get(id) ?? 0;
-    if (now - lastCandy >= 1100) {
+    if (!this.candyCooldowns.has(id) || now - lastCandy >= 1100) {
       this.candyCooldowns.set(id, now);
       gameState.addCandy(2, clientX, clientY, `creature:${id}`);
     }
@@ -268,7 +272,7 @@ export class BanterDirector {
 
   greetOnEnter(): void {
     window.setTimeout(() => {
-      if (!this.started) return;
+      if (!this.started || this.activityLocked || this.voiceManager.isSpeaking()) return;
       const pip = this.actors.get('pip');
       if (!pip) return;
       pip.pausedUntil = performance.now() + 3400;

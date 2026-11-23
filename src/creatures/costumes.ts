@@ -86,12 +86,12 @@ export const CREATURE_ACCESSORY_ANCHORS: Record<
   CreatureId,
   Record<CostumeSlot, AccessoryAnchor>
 > = {
-  pip: { hat: { y: -84, scale: 1.05 }, face: { y: -55, scale: 1.05 }, neck: { y: -18, scale: 1.0 } },
-  boobell: { hat: { y: -48, scale: 0.95 }, face: { y: -12, scale: 0.95 }, neck: { y: 20, scale: 0.9 } },
-  winnie: { hat: { y: -88, scale: 0.95 }, face: { y: -67, scale: 0.82 }, neck: { y: -45, scale: 0.85 } },
-  barnaby: { hat: { y: -98, scale: 0.92 }, face: { y: -78, scale: 0.88 }, neck: { y: -55, scale: 0.92 } },
-  frankie: { hat: { y: -114, scale: 1.05 }, face: { y: -88, scale: 0.96 }, neck: { y: -60, scale: 1.05 } },
-  bitey: { hat: { y: -24, scale: 0.82 }, face: { y: -6, scale: 0.78 }, neck: { y: 17, scale: 0.78 } },
+  pip: { hat: { y: -100, scale: 1.05 }, face: { y: -60, scale: 1.23 }, neck: { y: -19, scale: 0.85 } },
+  boobell: { hat: { y: -61, scale: 0.95 }, face: { y: -14, scale: 1.18 }, neck: { y: 22, scale: 0.9 } },
+  winnie: { hat: { y: -98, scale: 1.03 }, face: { y: -65, scale: 0.97 }, neck: { y: -33, scale: 0.8 } },
+  barnaby: { hat: { y: -126, scale: 1.02 }, face: { y: -93, scale: 1.23 }, neck: { y: -49, scale: 0.88 } },
+  frankie: { hat: { y: -134, scale: 1.1 }, face: { y: -94, scale: 1.18 }, neck: { y: -53, scale: 1.05 } },
+  bitey: { hat: { y: -44, scale: 0.85 }, face: { y: -10, scale: 1.02 }, neck: { y: 24, scale: 0.75 } },
 };
 
 export function renderCostumeMarkup(costumeId: string): string {

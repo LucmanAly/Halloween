@@ -3,108 +3,125 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Boo-Ville: The Silly Spooky Night!</title>
+    <title>Boo-Ville · A Silly Spooky Night</title>
+    <meta name="description" content="Meet six Halloween friends, play four mini-games, and discover the secrets of Boo-Ville." />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Nunito:wght@500;600;700;800;900&amp;display=swap"
     />
   </head>
   <body>
-    <!-- Welcome Curtain: unlocks Web Audio nicely for iPad, Android & Desktop -->
+    <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="icon-pumpkin" viewBox="0 0 24 24"><path d="M11 7c1-3 1-4 4-5m-3 6C7 4 2 8 2 14s5 9 10 7c5 2 10-1 10-7S17 4 12 8Zm-4 5h.01m8 0h.01M9 16q3 3 6 0"/></symbol>
+      <symbol id="icon-candy" viewBox="0 0 24 24"><path d="m8 9-5-1 1-5 5 1 1 4m4 8 1 4 5 1 1-5-5-2"/><rect x="7.5" y="7.5" width="9" height="9" rx="3" transform="rotate(-45 12 12)"/><path d="m10 14 4-4"/></symbol>
+      <symbol id="icon-stars" viewBox="0 0 24 24"><path d="m10 2 2.2 5.8L18 10l-5.8 2.2L10 18l-2.2-5.8L2 10l5.8-2.2L10 2Zm8 12 1.4 3.6L23 19l-3.6 1.4L18 24l-1.4-3.6L13 19l3.6-1.4L18 14Z"/></symbol>
+      <symbol id="icon-sound" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3Zm13 0q3 3 0 6m3-9q5 6 0 12"/></symbol>
+      <symbol id="icon-muted" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3Zm13 1 5 5m0-5-5 5"/></symbol>
+      <symbol id="icon-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="8" cy="7" r="3" fill="var(--control-fill)"/><circle cx="16" cy="17" r="3" fill="var(--control-fill)"/></symbol>
+      <symbol id="icon-friends" viewBox="0 0 24 24"><path d="M3 19v-6a6 6 0 0 1 12 0v6l-3-2-3 2-3-2-3 2Zm14-13a5 5 0 0 1 5 5v5l-2-1m-13-2h.01m4 0h.01"/></symbol>
+      <symbol id="icon-potion" viewBox="0 0 24 24"><path d="M9 3h6m-5 0v6l-5.7 8a2.5 2.5 0 0 0 2 4h11.4a2.5 2.5 0 0 0 2-4L14 9V3M7 14q2-2 5 0t5 0m-6 3h.01"/></symbol>
+      <symbol id="icon-seek" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6m-13-11h4m-2-2v4"/></symbol>
+      <symbol id="icon-door" viewBox="0 0 24 24"><path d="M4 21h16M6 21V9a6 6 0 0 1 12 0v12m-4-7h.01m-4-7q2-2 4 0"/></symbol>
+      <symbol id="icon-party" viewBox="0 0 24 24"><path d="m10 8-6 13 13-6Zm-2 5 4 5m1-11 3-4m2 8 4-1m-4-3 2-2"/></symbol>
+    </svg>
+
     <section id="welcome-curtain" class="welcome-curtain" aria-labelledby="welcome-title">
       <div class="welcome-card">
-        <div class="welcome-pumpkin" aria-hidden="true">🎃</div>
-        <h1 id="welcome-title" class="welcome-title">Boo-Ville</h1>
-        <p class="welcome-subtitle">The Silly Spooky Night!</p>
-        <p class="welcome-hint">
-          Tap 6 talking Halloween friends, brew wacky potions, play flashlight hide-and-seek, trick-or-treat, and throw a monster dance party!
-        </p>
-        <button id="play-btn" type="button" class="btn-play">
-          <span>Tap to Play!</span>
-          <span aria-hidden="true">✨</span>
-        </button>
+        <div class="welcome-copy">
+          <p class="welcome-subtitle">A silly spooky night</p>
+          <h1 id="welcome-title" class="welcome-title">Boo<span>-Ville</span></h1>
+          <p class="welcome-hint">Meet six silly Halloween friends, play mini-games, and find surprises in their moonlit courtyard.</p>
+          <button id="play-btn" type="button" class="btn-play">
+            <svg class="ui-icon" aria-hidden="true"><use href="#icon-pumpkin"/></svg>
+            <span>Let’s play</span>
+          </button>
+        </div>
+        <div id="welcome-cast" class="welcome-cast" aria-hidden="true">
+          <div class="welcome-moon"></div>
+          <svg class="welcome-sparks" viewBox="0 0 400 360">
+            <path d="M35 95q0 12 12 12-12 0-12 12 0-12-12-12 12 0 12-12Zm320-54q0 15 15 15-15 0-15 15 0-15-15-15 15 0 15-15ZM320 241q0 10 10 10-10 0-10 10 0-10-10-10 10 0 10-10Z" fill="currentColor"/>
+            <path d="M18 204h1m58-151h1m35 209h1M269 27h1m107 133h1m-14 121h1M57 313h1" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
       </div>
     </section>
 
-    <!-- Main Interactive Game Stage (starts inert behind welcome curtain) -->
     <main id="game-stage" class="stage" inert>
       <header class="hud" aria-label="Game controls and progress">
-        <div class="hud-group">
-          <div class="hud-pill hud-candy" id="candy-pill" aria-label="Magic candy collected">
-            <span class="pill-icon" aria-hidden="true">🍬</span>
-            <span id="candy-count" class="pill-value">0</span>
+        <div class="hud-brand">
+          <span class="brand-mark"><svg class="ui-icon" aria-hidden="true"><use href="#icon-pumpkin"/></svg></span>
+          <span>Boo-Ville</span>
+        </div>
+        <div class="hud-group hud-collection" aria-label="Collection">
+          <div class="hud-pill hud-candy" id="candy-pill">
+            <svg class="ui-icon" aria-hidden="true"><use href="#icon-candy"/></svg>
+            <span id="candy-count" class="pill-value">0</span><span class="pill-caption">Candy</span>
           </div>
-          <div class="hud-pill hud-secrets" aria-label="Courtyard secrets found">
-            <span class="pill-icon" aria-hidden="true">✨</span>
-            <span id="secrets-count" class="pill-value">0 / 10</span>
+          <div class="hud-pill hud-secrets">
+            <svg class="ui-icon" aria-hidden="true"><use href="#icon-stars"/></svg>
+            <span id="secrets-count" class="pill-value">0/10</span><span class="pill-caption">Secrets</span>
           </div>
         </div>
-
-        <div class="hud-group">
-          <button
-            id="surprise-btn"
-            type="button"
-            class="hud-btn hud-btn-magic"
-            aria-label="Trigger a spooky surprise event"
-          >
-            <span aria-hidden="true">🪄</span>
-            <span class="btn-label">Surprise!</span>
+        <div class="hud-group hud-actions">
+          <button id="surprise-btn" type="button" class="hud-btn hud-btn-magic" aria-label="Start a surprise">
+            <svg class="ui-icon" aria-hidden="true"><use href="#icon-stars"/></svg>
+            <span class="btn-label">Surprise</span>
           </button>
-          <button
-            id="mute-btn"
-            type="button"
-            class="hud-btn"
-            aria-label="Toggle sound and music"
-            aria-pressed="false"
-          >
-            <span id="mute-icon" aria-hidden="true">🔊</span>
+          <button id="mute-btn" type="button" class="hud-btn" aria-label="Mute sound" aria-pressed="false" title="Mute or unmute sound">
+            <svg class="ui-icon" aria-hidden="true"><use id="mute-icon" href="#icon-sound"/></svg>
           </button>
-          <button
-            id="settings-btn"
-            type="button"
-            class="hud-btn"
-            aria-label="Open Boo-Ville settings"
-          >
-            <span aria-hidden="true">⚙️</span>
+          <button id="settings-btn" type="button" class="hud-btn" aria-label="Open settings" title="Settings">
+            <svg class="ui-icon" aria-hidden="true"><use href="#icon-settings"/></svg>
           </button>
         </div>
       </header>
+
+      <div class="courtyard-intro">
+        <h1 id="courtyard-title" tabindex="-1">The courtyard</h1>
+        <p>Tap a friend or look for a secret.</p>
+      </div>
+      <nav id="activity-dock" class="activity-dock" aria-label="Boo-Ville activities">
+        <button id="friends-btn" type="button" class="dock-btn" aria-controls="friends-panel" aria-expanded="false">
+          <svg class="ui-icon" aria-hidden="true"><use href="#icon-friends"/></svg>
+          <span>Friends</span>
+        </button>
+        <button type="button" class="dock-btn" data-activity="cauldron" aria-label="Open Potions">
+          <svg class="ui-icon" aria-hidden="true"><use href="#icon-potion"/></svg>
+          <span>Potions</span>
+        </button>
+        <button type="button" class="dock-btn" data-activity="flashlight" aria-label="Play Flashlight Hide-and-Seek">
+          <svg class="ui-icon" aria-hidden="true"><use href="#icon-seek"/></svg>
+          <span>Hide &amp; Seek</span>
+        </button>
+        <button type="button" class="dock-btn" data-activity="trick-or-treat" aria-label="Play Trick-or-Treat">
+          <svg class="ui-icon" aria-hidden="true"><use href="#icon-door"/></svg>
+          <span>Trick or Treat</span>
+        </button>
+        <button type="button" class="dock-btn" data-activity="dress-up" aria-label="Open Dress-Up and Dance Party">
+          <svg class="ui-icon" aria-hidden="true"><use href="#icon-party"/></svg>
+          <span>Dress-Up</span>
+        </button>
+      </nav>
+
+      <section id="friends-panel" class="friends-panel" aria-labelledby="friends-title" hidden>
+        <h2 id="friends-title">Meet the friends</h2>
+        <div id="friends-grid" class="friends-grid"></div>
+      </section>
 
       <div id="scene-layer" class="scene-layer"></div>
       <div id="stage-fx-layer" class="stage-fx-layer" aria-hidden="true"></div>
       <div id="activity-layer" class="activity-layer"></div>
       <canvas id="particle-canvas" class="particle-canvas" aria-hidden="true"></canvas>
       <div id="speech-layer" class="speech-layer" aria-live="polite"></div>
-
-      <nav id="activity-dock" class="activity-dock" aria-label="Boo-Ville mini-activities">
-        <button type="button" class="dock-btn" data-activity="cauldron" aria-label="Open Winnie's Wacky Potions">
-          <span class="dock-emoji" aria-hidden="true">🧪</span>
-          <span class="dock-label">Potions</span>
-          <span id="dock-potions-badge" class="dock-badge">0/8</span>
-        </button>
-        <button type="button" class="dock-btn" data-activity="flashlight" aria-label="Play Flashlight Hide-and-Seek">
-          <span class="dock-emoji" aria-hidden="true">🔦</span>
-          <span class="dock-label">Seek</span>
-        </button>
-        <button type="button" class="dock-btn" data-activity="trick-or-treat" aria-label="Play Knock-Knock Trick-or-Treat">
-          <span class="dock-emoji" aria-hidden="true">🚪</span>
-          <span class="dock-label">Knock</span>
-        </button>
-        <button type="button" class="dock-btn" data-activity="dress-up" aria-label="Open Silly Dress-Up and Dance Party">
-          <span class="dock-emoji" aria-hidden="true">🎩</span>
-          <span class="dock-label">Party</span>
-          <span id="dock-costumes-badge" class="dock-badge">2/6</span>
-        </button>
-      </nav>
     </main>
 
     <!-- Native Modal Settings Dialog -->
     <dialog id="settings-dialog" class="settings-dialog" closedby="any" aria-labelledby="settings-heading">
       <div class="settings-header">
-        <h2 id="settings-heading">Boo-Ville Settings</h2>
+        <h2 id="settings-heading">Settings</h2>
         <form method="dialog">
           <button type="submit" class="dialog-close-btn" aria-label="Close settings">✕</button>
         </form>
@@ -112,38 +129,38 @@
 
       <div class="settings-body">
         <div class="setting-row">
-          <label for="music-volume" class="setting-label">🎵 Spooky Music</label>
+          <label for="music-volume" class="setting-label">Music</label>
           <input id="music-volume" type="range" min="0" max="100" step="5" value="45" />
         </div>
 
         <div class="setting-row">
-          <label for="sfx-volume" class="setting-label">🔊 Sounds &amp; Voices</label>
+          <label for="sfx-volume" class="setting-label">Sounds &amp; voices</label>
           <input id="sfx-volume" type="range" min="0" max="100" step="5" value="85" />
         </div>
 
         <div class="setting-row setting-toggle-row">
-          <label for="reduced-motion-toggle" class="setting-label">🌙 Gentle Motion</label>
+          <label for="reduced-motion-toggle" class="setting-label">Gentle motion</label>
           <input id="reduced-motion-toggle" type="checkbox" class="kid-checkbox" />
         </div>
 
         <fieldset class="age-fieldset">
-          <legend class="setting-label">🎃 Play Style (for Creatures &amp; Games)</legend>
+          <legend class="setting-label">Play style</legend>
           <div class="age-choices">
             <button id="age-easy-btn" type="button" class="age-btn" aria-pressed="true">
-              Easy (Ages 3–6)
+              Easy · Ages 3–6
             </button>
             <button id="age-playful-btn" type="button" class="age-btn" aria-pressed="false">
-              Playful (Ages 6–9)
+              Playful · Ages 6–9
             </button>
           </div>
         </fieldset>
 
-        <section class="coming-soon-box" aria-label="Your Boo-Ville Collection">
-          <p class="coming-soon-title">Your Boo-Ville Collection</p>
-          <ul class="coming-soon-list">
-            <li>✨ Courtyard Secrets: <strong id="settings-secrets-progress">0 / 10</strong></li>
-            <li>🧪 Spells Brewed: <strong id="settings-potions-progress">0 / 8</strong></li>
-            <li>🎩 Costumes Unlocked: <strong id="settings-costumes-progress">2 / 6</strong></li>
+        <section class="collection-box" aria-label="Your collection">
+          <p class="collection-title">Your collection</p>
+          <ul class="collection-list">
+            <li>Courtyard secrets <strong id="settings-secrets-progress">0 / 10</strong></li>
+            <li>Spells brewed <strong id="settings-potions-progress">0 / 8</strong></li>
+            <li>Costumes unlocked <strong id="settings-costumes-progress">2 / 6</strong></li>
           </ul>
         </section>
 
@@ -152,7 +169,7 @@
             Reset All Progress
           </button>
           <form method="dialog">
-            <button type="submit" class="done-btn">Back to Boo-Ville</button>
+            <button type="submit" class="done-btn">Back to play</button>
           </form>
         </div>
       </div>

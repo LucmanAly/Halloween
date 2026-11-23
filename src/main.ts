@@ -9,6 +9,7 @@ import { eventBus } from './core/eventBus.ts';
 import { gameState } from './core/state.ts';
 import { BanterDirector } from './creatures/banterDirector.ts';
 import { voiceManager } from './creatures/voiceManager.ts';
+import { initFriendsPanel } from './ui/friendsPanel.ts';
 import { initHud } from './ui/hud.ts';
 import { initSettingsDialog } from './ui/settingsDialog.ts';
 import { initWelcomeCurtain } from './ui/welcomeCurtain.ts';
@@ -26,13 +27,9 @@ function initSpeechLayer(): void {
       speechLayer.firstElementChild?.remove();
     }
 
-    const clampedX = Math.min(window.innerWidth - 135, Math.max(135, payload.x));
-    const clampedY = Math.min(window.innerHeight - 28, Math.max(126, payload.y));
-
+    const edge = speechLayer.getBoundingClientRect();
     const bubble = document.createElement('div');
     bubble.className = 'speech-bubble';
-    bubble.style.setProperty('--bubble-x', `${Math.round(clampedX)}px`);
-    bubble.style.setProperty('--bubble-y', `${Math.round(clampedY)}px`);
     if (payload.color) {
       bubble.style.setProperty('--bubble-accent', payload.color);
     }
@@ -47,6 +44,14 @@ function initSpeechLayer(): void {
 
     bubble.append(emojiSpan, textSpan);
     speechLayer.appendChild(bubble);
+    const margin = 12;
+    const width = bubble.offsetWidth;
+    const height = bubble.offsetHeight;
+    const topLimit = Math.max(margin, (document.querySelector('.hud')?.getBoundingClientRect().bottom ?? edge.top) - edge.top + 8);
+    const x = Math.max(margin, Math.min(edge.width - width - margin, payload.x - edge.left - width / 2));
+    const y = Math.max(topLimit, Math.min(edge.height - height - margin, payload.y - edge.top - height - 8));
+    bubble.style.setProperty('--bubble-x', `${Math.round(x)}px`);
+    bubble.style.setProperty('--bubble-y', `${Math.round(y)}px`);
 
     const duration = payload.durationMs ?? 2400;
     window.setTimeout(() => {
@@ -92,6 +97,7 @@ function bootstrap(): void {
   });
 
   initSpeechLayer();
+  initFriendsPanel(banterDirector);
   const settings = initSettingsDialog();
   initHud(worldEvents, settings.open);
   initWelcomeCurtain(particles, worldEvents, banterDirector);

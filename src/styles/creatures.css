@@ -359,25 +359,13 @@
   }
 }
 
-/* Reduced Motion Respect (keep crisp mouth lip-sync active) */
-:root[data-reduced-motion='true'] .creature-eyes,
-:root[data-reduced-motion='true'] .creature-root.is-walking .creature-motion,
-:root[data-reduced-motion='true'] .creature-root.is-dancing .creature-motion,
-:root[data-reduced-motion='true'] .creature-boobell .creature-motion,
-:root[data-reduced-motion='true'] .creature-bitey .creature-motion,
-:root[data-reduced-motion='true'] .wing-left,
-:root[data-reduced-motion='true'] .wing-right {
+/* Mouth changes still communicate speech when motion is reduced. */
+:root[data-reduced-motion='true'] :is(.creature-eyes, .creature-root .creature-motion, .wing-left, .wing-right, .winnie-hat, .barnaby-head, .barnaby-torso) {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .creature-eyes,
-  .creature-root.is-walking .creature-motion,
-  .creature-root.is-dancing .creature-motion,
-  .creature-boobell .creature-motion,
-  .creature-bitey .creature-motion,
-  .wing-left,
-  .wing-right {
-    animation: none;
+  :is(.creature-eyes, .creature-root .creature-motion, .wing-left, .wing-right, .winnie-hat, .barnaby-head, .barnaby-torso) {
+    animation: none !important;
   }
 }
