@@ -50,6 +50,7 @@ export class FlashlightGame implements ActivityController {
   private dwellSec = new Map<CreatureId, number>();
   private pressedKeys = new Set<string>();
   private roundComplete = false;
+  private hintTimer = 0;
   private timers: number[] = [];
 
   private readonly onKeyDown = (e: KeyboardEvent) => {
@@ -100,6 +101,8 @@ export class FlashlightGame implements ActivityController {
       window.clearTimeout(id);
     }
     this.timers = [];
+    window.clearTimeout(this.hintTimer);
+    this.hintTimer = 0;
     this.pressedKeys.clear();
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
@@ -142,6 +145,9 @@ export class FlashlightGame implements ActivityController {
       ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
       this.beamX = Math.max(40, Math.min(this.width - 40, this.beamX));
       this.beamY = Math.max(40, Math.min(this.height - 40, this.beamY));
+      if (this.openState && !this.roundComplete && this.targets.length > 0) {
+        this.clampTargetsToVisibleBounds();
+      }
     };
 
     resize();
@@ -165,11 +171,31 @@ export class FlashlightGame implements ActivityController {
     });
   }
 
+  private getBottomClearancePx(): number {
+    const barHeight = this.pillBarEl?.getBoundingClientRect().height ?? 84;
+    return Math.max(96, barHeight + 34);
+  }
+
+  private clampTargetsToVisibleBounds(): void {
+    const vis = this.deps.banterDirector.getVisibleSvgBounds(this.getBottomClearancePx());
+    for (const spot of HIDING_SPOTS) {
+      const record = this.spots.get(spot.id);
+      if (!record) continue;
+      const clampedX = Math.max(vis.minX + 65, Math.min(vis.maxX - 65, spot.x));
+      const clampedY = Math.max(vis.minY + 70, Math.min(vis.maxY - 55, spot.y));
+      record.svgX = clampedX;
+      record.svgY = clampedY;
+      this.deps.banterDirector.placeCreature(spot.id, clampedX, clampedY, spot.facing);
+    }
+  }
+
   private startNewRound(): void {
     this.roundComplete = false;
     this.found.clear();
     this.dwellSec.clear();
     this.spots.clear();
+    window.clearTimeout(this.hintTimer);
+    this.hintTimer = 0;
     this.summaryEl?.remove();
     this.summaryEl = null;
 
@@ -180,7 +206,7 @@ export class FlashlightGame implements ActivityController {
     const chosenSpots = ageMode === 'easy' ? shuffled.slice(0, 4) : shuffled;
     this.targets = chosenSpots.map((s) => s.id);
 
-    const vis = this.deps.banterDirector.getVisibleSvgBounds();
+    const vis = this.deps.banterDirector.getVisibleSvgBounds(this.getBottomClearancePx());
     const chosenSet = new Set(this.targets);
 
     for (const spot of HIDING_SPOTS) {
@@ -201,7 +227,20 @@ export class FlashlightGame implements ActivityController {
 
     this.activeHintTarget = this.targets[0] ?? null;
     this.renderControlBar();
+    // Re-clamp with exact rendered bar height in case chips wrapped onto 2 lines
+    this.clampTargetsToVisibleBounds();
     this.speakCurrentHint();
+  }
+
+  private syncControlBarChips(): void {
+    this.pillBarEl?.querySelectorAll<HTMLElement>('[data-seek-id]').forEach((chip) => {
+      const id = chip.dataset.seekId as CreatureId | undefined;
+      if (!id) return;
+      const cfg = CREATURE_ROSTER.find((c) => c.id === id);
+      const isFound = this.found.has(id);
+      chip.classList.toggle('is-found', isFound);
+      chip.textContent = `${isFound ? '✅' : '👀'} ${cfg?.name ?? id}`;
+    });
   }
 
   private renderControlBar(): void {
@@ -305,23 +344,24 @@ export class FlashlightGame implements ActivityController {
       void this.deps.voiceManager.speakCategory(creature, 'greeting');
     }
 
-    this.renderControlBar();
+    this.syncControlBarChips();
 
     if (this.found.size >= this.targets.length) {
       this.finishRound();
     } else {
-      this.timers.push(
-        window.setTimeout(() => {
-          if (this.openState && !this.roundComplete) {
-            this.speakCurrentHint();
-          }
-        }, 2300),
-      );
+      window.clearTimeout(this.hintTimer);
+      this.hintTimer = window.setTimeout(() => {
+        if (this.openState && !this.roundComplete) {
+          this.speakCurrentHint();
+        }
+      }, 2300);
     }
   }
 
   private finishRound(): void {
     this.roundComplete = true;
+    window.clearTimeout(this.hintTimer);
+    this.hintTimer = 0;
     audioEngine.playFanfare();
     const stageRect = this.deps.stage.getBoundingClientRect();
     const cx = stageRect.left + this.width * 0.5;
@@ -367,6 +407,7 @@ export class FlashlightGame implements ActivityController {
     backdrop.querySelector('#seek-home-btn')?.addEventListener('click', () => {
       this.onRequestClose();
     });
+    backdrop.querySelector<HTMLButtonElement>('#seek-again-btn')?.focus();
   }
 
   private loop(now: number): void {

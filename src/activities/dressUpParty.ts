@@ -23,6 +23,12 @@ export class DressUpParty implements ActivityController {
   private statusText = 'Pick a friend & snap on silly costumes!';
   private lastPadAt = 0;
 
+  private readonly onDanceResize = () => {
+    if (this.danceActive) {
+      this.deps.banterDirector.repositionDancers();
+    }
+  };
+
   constructor(deps: ActivityDeps, onRequestClose: () => void) {
     this.deps = deps;
     this.onRequestClose = onRequestClose;
@@ -45,7 +51,7 @@ export class DressUpParty implements ActivityController {
     this.statusText = 'Pick a friend & snap on silly costumes!';
     this.deps.worldEvents.setPaused(true);
     this.deps.banterDirector.setActivityMode(true);
-    this.renderWardrobe();
+    this.renderWardrobe('.creature-tab-btn');
   }
 
   close(): void {
@@ -63,7 +69,7 @@ export class DressUpParty implements ActivityController {
     this.deps.worldEvents.setPaused(false);
   }
 
-  private renderWardrobe(): void {
+  private renderWardrobe(focusSelector?: string): void {
     this.deps.activityLayer.innerHTML = '';
     const backdrop = document.createElement('div');
     backdrop.className = 'activity-backdrop';
@@ -151,6 +157,9 @@ export class DressUpParty implements ActivityController {
 
     this.deps.activityLayer.appendChild(backdrop);
     this.bindWardrobeControls();
+    if (focusSelector) {
+      backdrop.querySelector<HTMLElement>(focusSelector)?.focus();
+    }
   }
 
   private bindWardrobeControls(): void {
@@ -175,7 +184,7 @@ export class DressUpParty implements ActivityController {
         this.statusText = `Dressing up ${
           CREATURE_ROSTER.find((c) => c.id === id)?.name ?? id
         }!`;
-        this.renderWardrobe();
+        this.renderWardrobe(`[data-creature-tab="${id}"]`);
       });
     });
 
@@ -183,7 +192,7 @@ export class DressUpParty implements ActivityController {
       gameState.equipCostume(this.selectedCreature, null);
       audioEngine.playBubblePop(1);
       this.statusText = 'Sparkly fresh look! Pick another costume anytime!';
-      this.renderWardrobe();
+      this.renderWardrobe('.costume-card');
     });
 
     this.backdropEl.querySelectorAll<HTMLButtonElement>('[data-costume-id]').forEach((btn) => {
@@ -213,14 +222,14 @@ export class DressUpParty implements ActivityController {
       this.statusText = `${item.emoji} Snapped ${item.name} onto ${
         CREATURE_ROSTER.find((c) => c.id === this.selectedCreature)?.name
       }!`;
-      this.renderWardrobe();
+      this.renderWardrobe(`[data-costume-id="${costumeId}"]`);
       return;
     }
 
     if (state.candy < item.cost) {
       audioEngine.playBubblePop(0);
       this.statusText = `Need ${item.cost - state.candy} more 🍬 Magic Candy! Tap creatures, bubbles, or play games!`;
-      this.renderWardrobe();
+      this.renderWardrobe(`[data-costume-id="${costumeId}"]`);
       return;
     }
 
@@ -230,7 +239,7 @@ export class DressUpParty implements ActivityController {
       audioEngine.playFanfare();
       this.deps.particles.spawnBurst(cx, cy, [item.accent, '#ffd166', '#6ef3b3', '#ff7eb6'], 24, 'star');
       this.statusText = `🎉 Unlocked & equipped ${item.name}!`;
-      this.renderWardrobe();
+      this.renderWardrobe(`[data-costume-id="${costumeId}"]`);
     }
   }
 
@@ -244,6 +253,7 @@ export class DressUpParty implements ActivityController {
     this.deps.banterDirector.setActivityMode(false);
     this.deps.banterDirector.setDanceMode(true);
     this.deps.worldEvents.setPaused(true);
+    window.addEventListener('resize', this.onDanceResize);
 
     // Mount Pumpkin Disco Ball + Spotlight Beams
     this.deps.stageFxLayer.innerHTML = `
@@ -307,7 +317,7 @@ export class DressUpParty implements ActivityController {
       this.stopDancePartyVisuals();
       this.deps.banterDirector.setActivityMode(true);
       this.deps.worldEvents.setPaused(true);
-      this.renderWardrobe();
+      this.renderWardrobe('.creature-tab-btn');
     });
 
     bar.querySelector('#party-confetti-btn')?.addEventListener('click', () => {
@@ -330,12 +340,14 @@ export class DressUpParty implements ActivityController {
       this.onRequestClose();
     });
 
+    bar.querySelector<HTMLButtonElement>('#party-confetti-btn')?.focus();
     audioEngine.playFanfare();
   }
 
   private stopDancePartyVisuals(): void {
     if (!this.danceActive) return;
     this.danceActive = false;
+    window.removeEventListener('resize', this.onDanceResize);
     this.deps.stage.classList.remove('is-dance-party');
     this.deps.stageFxLayer.innerHTML = '';
     this.deps.activityLayer.innerHTML = '';

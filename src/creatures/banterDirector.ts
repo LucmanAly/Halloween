@@ -465,10 +465,10 @@ export class BanterDirector {
     return Array.from(this.actors.values(), (actor) => actor.instance);
   }
 
-  getVisibleSvgBounds(): { minX: number; maxX: number; minY: number; maxY: number } {
+  getVisibleSvgBounds(bottomInsetPx = 90): { minX: number; maxX: number; minY: number; maxY: number } {
     const rect = this.stage.getBoundingClientRect();
     const tl = this.clientToSvg(rect.left + 32, rect.top + 88);
-    const br = this.clientToSvg(rect.right - 32, rect.bottom - 90);
+    const br = this.clientToSvg(rect.right - 32, rect.bottom - Math.max(48, bottomInsetPx));
     if (!tl || !br) {
       return { minX: 180, maxX: 1420, minY: 130, maxY: 790 };
     }
@@ -524,6 +524,26 @@ export class BanterDirector {
     this.sortStageDepth();
   }
 
+  repositionDancers(): void {
+    if (!this.danceMode) return;
+    const vis = this.getVisibleSvgBounds(96);
+    const span = Math.max(260, vis.maxX - vis.minX);
+    const centerX = (vis.minX + vis.maxX) * 0.5;
+    const groundY = Math.min(735, Math.max(660, vis.maxY - 24));
+    const airY = Math.max(210, Math.min(340, vis.minY + 125));
+
+    const groundIds: CreatureId[] = ['pip', 'barnaby', 'winnie', 'frankie'];
+    groundIds.forEach((id, idx) => {
+      const frac = 0.14 + (idx / (groundIds.length - 1)) * 0.72;
+      const x = vis.minX + span * frac;
+      const y = groundY + (idx % 2 === 0 ? -10 : 14);
+      this.placeCreature(id, x, y, x <= centerX ? 1 : -1);
+    });
+
+    this.placeCreature('boobell', vis.minX + span * 0.3, airY, 1);
+    this.placeCreature('bitey', vis.minX + span * 0.7, airY - 12, -1);
+  }
+
   setDanceMode(active: boolean): void {
     if (this.danceMode === active) return;
     this.danceMode = active;
@@ -533,22 +553,7 @@ export class BanterDirector {
 
     if (active) {
       this.voiceManager.stopAll();
-      const vis = this.getVisibleSvgBounds();
-      const span = Math.max(260, vis.maxX - vis.minX);
-      const centerX = (vis.minX + vis.maxX) * 0.5;
-      const groundY = Math.min(735, Math.max(660, vis.maxY - 24));
-      const airY = Math.max(210, Math.min(340, vis.minY + 125));
-
-      const groundIds: CreatureId[] = ['pip', 'barnaby', 'winnie', 'frankie'];
-      groundIds.forEach((id, idx) => {
-        const frac = 0.14 + (idx / (groundIds.length - 1)) * 0.72;
-        const x = vis.minX + span * frac;
-        const y = groundY + (idx % 2 === 0 ? -10 : 14);
-        this.placeCreature(id, x, y, x <= centerX ? 1 : -1);
-      });
-
-      this.placeCreature('boobell', vis.minX + span * 0.3, airY, 1);
-      this.placeCreature('bitey', vis.minX + span * 0.7, airY - 12, -1);
+      this.repositionDancers();
 
       for (const actor of this.actors.values()) {
         actor.instance.root.classList.add('is-dancing');

@@ -1,5 +1,6 @@
 import { audioEngine } from '../core/audioEngine.ts';
 import { BanterDirector } from '../creatures/banterDirector.ts';
+import { voiceManager } from '../creatures/voiceManager.ts';
 import { ParticleCanvas } from '../world/particleCanvas.ts';
 import { WorldEventsDirector } from '../world/worldEvents.ts';
 
@@ -42,5 +43,7 @@ export function initWelcomeCurtain(
     worldEvents.start();
     banterDirector.start();
     banterDirector.greetOnEnter();
+    window.setTimeout(() => voiceManager.preloadPriorityVoices(), 1200);
+    document.querySelector<HTMLButtonElement>('#activity-dock .dock-btn')?.focus();
   });
 }

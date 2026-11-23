@@ -37,7 +37,7 @@ export class TrickOrTreatGame implements ActivityController {
   private readonly onRequestClose: () => void;
 
   private openState = false;
-  private phase: 'knock' | 'guess' | 'catcher' | 'summary' = 'knock';
+  private phase: 'knock' | 'guess' | 'revealing' | 'catcher' | 'summary' = 'knock';
   private knocks = 0;
   private visitorId: CreatureId = 'pip';
   private guessChoices: CreatureId[] = [];
@@ -123,7 +123,7 @@ export class TrickOrTreatGame implements ActivityController {
       .map((c) => c.id)
       .sort(() => Math.random() - 0.5);
     this.doorStatusText = 'Tap the haunted door 3 times to knock!';
-    this.render();
+    this.render('#tot-door-btn');
   }
 
   private stopCatcherLoop(): void {
@@ -138,7 +138,7 @@ export class TrickOrTreatGame implements ActivityController {
     this.ctx = null;
   }
 
-  private render(): void {
+  private render(focusSelector?: string): void {
     this.deps.activityLayer.innerHTML = '';
     const backdrop = document.createElement('div');
     backdrop.className = 'activity-backdrop';
@@ -149,13 +149,13 @@ export class TrickOrTreatGame implements ActivityController {
 
     let bodyHtml = '';
 
-    if (this.phase === 'knock' || this.phase === 'guess') {
+    if (this.phase === 'knock' || this.phase === 'guess' || this.phase === 'revealing') {
       const pipsHtml = [0, 1, 2]
         .map((i) => `<span class="knock-pip ${this.knocks > i ? 'is-lit' : ''}">✊</span>`)
         .join('');
 
       const choicesHtml =
-        this.phase === 'guess'
+        this.phase === 'guess' || this.phase === 'revealing'
           ? `
           <div class="guess-grid">
             ${this.guessChoices
@@ -237,6 +237,9 @@ export class TrickOrTreatGame implements ActivityController {
 
     this.deps.activityLayer.appendChild(backdrop);
     this.bindRenderedControls();
+    if (focusSelector) {
+      backdrop.querySelector<HTMLElement>(focusSelector)?.focus();
+    }
   }
 
   private bindRenderedControls(): void {
@@ -255,6 +258,7 @@ export class TrickOrTreatGame implements ActivityController {
 
     this.backdropEl.querySelectorAll<HTMLButtonElement>('[data-guess-id]').forEach((btn) => {
       btn.addEventListener('click', () => {
+        if (this.phase !== 'guess') return;
         const guessId = btn.dataset.guessId as CreatureId;
         if (guessId === this.visitorId) {
           const rect = btn.getBoundingClientRect();
@@ -315,11 +319,19 @@ export class TrickOrTreatGame implements ActivityController {
     if (this.knocks >= 3) {
       this.phase = 'guess';
       this.doorStatusText = 'Listen to the spooky voice clue! Who is behind the door?';
-      this.render();
+      this.render('.guess-card');
       this.playVisitorClue();
     } else {
       this.doorStatusText = `Knock ${this.knocks} of 3... tap again!`;
-      this.render();
+      const pipsWrap = this.backdropEl?.querySelector('.knock-pips');
+      pipsWrap?.setAttribute('aria-label', `Knocks: ${this.knocks} of 3`);
+      pipsWrap?.querySelectorAll('.knock-pip').forEach((pip, idx) => {
+        pip.classList.toggle('is-lit', this.knocks > idx);
+      });
+      const status = this.backdropEl?.querySelector('#tot-status');
+      if (status) {
+        status.textContent = this.doorStatusText;
+      }
     }
   }
 
@@ -332,6 +344,19 @@ export class TrickOrTreatGame implements ActivityController {
   }
 
   private swingDoorOpen(): void {
+    if (this.phase !== 'guess') return;
+    this.phase = 'revealing';
+
+    const status = this.backdropEl?.querySelector('#tot-status');
+    if (status) {
+      status.textContent = this.doorStatusText;
+    }
+    this.backdropEl
+      ?.querySelectorAll<HTMLButtonElement>('[data-guess-id], #tot-replay-clue, #tot-just-open')
+      .forEach((btn) => {
+        btn.disabled = true;
+      });
+
     const doorBtn = this.backdropEl?.querySelector<HTMLButtonElement>('#tot-door-btn');
     if (doorBtn) {
       doorBtn.classList.add('is-open');
@@ -641,6 +666,6 @@ export class TrickOrTreatGame implements ActivityController {
     this.phase = 'summary';
     audioEngine.playFanfare();
     gameState.addCandy(5, window.innerWidth * 0.5, window.innerHeight * 0.45, 'trick-or-treat:finish');
-    this.render();
+    this.render('#tot-again-btn');
   }
 }

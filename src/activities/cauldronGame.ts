@@ -132,6 +132,7 @@ export class CauldronGame implements ActivityController {
   private isDragging = false;
   private stirAccum = 0;
   private lastStirAngle: number | null = null;
+  private suppressNextClickUntil = 0;
   private lastResultText = 'Tap or drag 3 silly ingredients into Winnie\'s pot!';
   private timers: number[] = [];
 
@@ -157,7 +158,7 @@ export class CauldronGame implements ActivityController {
 
     this.deps.worldEvents.setPaused(true);
     this.deps.banterDirector.setActivityMode(true);
-    this.render();
+    this.render('.ingredient-btn');
 
     window.addEventListener('pointermove', this.onWindowPointerMove);
     window.addEventListener('pointerup', this.onWindowPointerUp);
@@ -184,7 +185,7 @@ export class CauldronGame implements ActivityController {
     this.deps.worldEvents.setPaused(false);
   }
 
-  private render(): void {
+  private render(focusSelector?: string): void {
     this.deps.activityLayer.innerHTML = '';
     const backdrop = document.createElement('div');
     backdrop.className = 'activity-backdrop';
@@ -327,6 +328,9 @@ export class CauldronGame implements ActivityController {
 
     this.deps.activityLayer.appendChild(backdrop);
     this.bindRenderedControls();
+    if (focusSelector) {
+      backdrop.querySelector<HTMLElement>(focusSelector)?.focus();
+    }
   }
 
   private bindRenderedControls(): void {
@@ -356,7 +360,7 @@ export class CauldronGame implements ActivityController {
 
       btn.addEventListener('click', () => {
         // Keyboard Enter/Space or direct click when drag did not consume
-        if (this.isDragging) return;
+        if (this.isDragging || performance.now() < this.suppressNextClickUntil) return;
         this.addIngredient(ingId, btn.getBoundingClientRect());
       });
     });
@@ -388,7 +392,7 @@ export class CauldronGame implements ActivityController {
       audioEngine.playBubblePop(0);
       this.selected = [];
       this.stirAccum = 0;
-      this.render();
+      this.render('.ingredient-btn');
     });
 
     this.backdropEl.querySelector('#cauldron-brew-btn')?.addEventListener('click', () => {
@@ -401,7 +405,7 @@ export class CauldronGame implements ActivityController {
         if (!recipe) return;
         this.selected = [...recipe.canonical];
         audioEngine.playIngredientDrop(2);
-        this.render();
+        this.render('#cauldron-brew-btn');
       });
     });
   }
@@ -439,6 +443,9 @@ export class CauldronGame implements ActivityController {
     if (!this.activeDragId) return;
     const ingId = this.activeDragId;
     const wasDragging = this.isDragging;
+    if (wasDragging) {
+      this.suppressNextClickUntil = performance.now() + 200;
+    }
     this.cleanupDrag();
 
     if (wasDragging) {
@@ -478,7 +485,9 @@ export class CauldronGame implements ActivityController {
       10,
       'bubble',
     );
-    this.render();
+    this.render(
+      this.selected.length === 3 ? '#cauldron-brew-btn' : `[data-ingredient="${ingId}"]`,
+    );
   }
 
   private brewCurrentPotion(): void {
@@ -509,7 +518,7 @@ export class CauldronGame implements ActivityController {
     })`;
     this.selected = [];
     this.stirAccum = 0;
-    this.render();
+    this.render('.ingredient-btn');
   }
 
   private triggerSpellEffect(recipe: PotionRecipe): void {

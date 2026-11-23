@@ -586,7 +586,7 @@
 
 .guess-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(96px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   inline-size: 100%;
   max-inline-size: 480px;
@@ -643,7 +643,7 @@
 .catcher-canvas {
   inline-size: 100%;
   max-inline-size: 680px;
-  block-size: clamp(270px, 46dvh, 380px);
+  block-size: clamp(210px, 42dvh, 360px);
   border-radius: 22px;
   border: 2.5px solid rgba(255, 209, 102, 0.45);
   background: linear-gradient(180deg, #1b0c3b, #341963 72%, #241145);
@@ -853,6 +853,38 @@
 
   .creature-picker-row {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .activity-backdrop {
+    padding: max(62px, calc(env(safe-area-inset-top) + 54px)) 10px max(12px, env(safe-area-inset-bottom));
+  }
+
+  .activity-card {
+    max-block-size: calc(100dvh - 76px);
+  }
+
+  .activity-pill-bar {
+    gap: 6px;
+    padding: 8px 10px;
+  }
+
+  .seek-chip {
+    font-size: 0.74rem;
+    padding: 3px 8px;
+  }
+
+  .guess-card svg {
+    inline-size: 48px;
+    block-size: 52px;
+  }
+}
+
+@media (max-width: 460px) {
+  .costume-grid,
+  .spellbook-grid {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -23,6 +23,7 @@ export class VoiceManager {
   private activeSpeaker: CreatureId | null = null;
   private speakSeq = 0;
   private activeCleanup: (() => void) | null = null;
+  private preloadStarted = false;
 
   async load(): Promise<VoiceManifest | null> {
     if (this.manifest) return this.manifest;
@@ -32,19 +33,55 @@ export class VoiceManager {
       try {
         const url = `${import.meta.env.BASE_URL}audio/voices/manifest.json`;
         const response = await fetch(url);
-        if (!response.ok) return null;
+        if (!response.ok) {
+          this.loadPromise = null;
+          return null;
+        }
         const parsed = (await response.json()) as VoiceManifest;
         if (Array.isArray(parsed.lines)) {
           this.manifest = parsed;
           return parsed;
         }
       } catch {
-        // Offline or missing manifest falls back gracefully.
+        // Offline or missing manifest falls back gracefully and can retry later.
       }
+      this.loadPromise = null;
       return null;
     })();
 
     return this.loadPromise;
+  }
+
+  preloadPriorityVoices(): void {
+    if (this.preloadStarted) return;
+    this.preloadStarted = true;
+
+    void (async () => {
+      const manifest = await this.load();
+      if (!manifest) {
+        this.preloadStarted = false;
+        return;
+      }
+
+      const priorityLines = manifest.lines.filter(
+        (line) =>
+          line.category === 'hint' ||
+          (line.creatureId === 'pip' && line.id === 'greet_1') ||
+          (line.creatureId === 'winnie' && line.id === 'gag_1'),
+      );
+
+      for (const line of priorityLines) {
+        await new Promise((r) => window.setTimeout(r, 350));
+        if (
+          document.hidden ||
+          gameState.get().audio.muted ||
+          (typeof navigator !== 'undefined' && navigator.onLine === false)
+        ) {
+          continue;
+        }
+        await audioEngine.preloadVoice(`${import.meta.env.BASE_URL}${line.file}`);
+      }
+    })();
   }
 
   amplitudeToMouth(amp: number): MouthShape {

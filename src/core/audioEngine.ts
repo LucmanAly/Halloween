@@ -51,11 +51,13 @@ class AudioEngine {
   private partyMode = false;
 
   private readonly voiceCache = new Map<string, AudioBuffer>();
+  private readonly voicePending = new Map<string, Promise<AudioBuffer>>();
   private activeVoiceSource: AudioBufferSourceNode | null = null;
   private activeVoiceRaf = 0;
   private voicePlaySeq = 0;
   private voiceDucking = false;
   private activeVoiceStopCleanup: (() => void) | null = null;
+  private suspendTimer = 0;
 
   constructor() {
     eventBus.on('audio:state', () => {
@@ -94,18 +96,35 @@ class AudioEngine {
 
     if (!this.visibilityBound) {
       this.visibilityBound = true;
+      const fadeOutAndSuspend = () => {
+        if (!this.ctx || !this.unlocked) return;
+        this.stopVoice();
+        this.stopMusic();
+        if (this.masterGain) {
+          this.masterGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.02);
+        }
+        window.clearTimeout(this.suspendTimer);
+        this.suspendTimer = window.setTimeout(() => {
+          if (document.hidden && this.ctx && this.ctx.state === 'running') {
+            void this.ctx.suspend();
+          }
+        }, 60);
+      };
+
       document.addEventListener('visibilitychange', () => {
         if (!this.ctx || !this.unlocked) return;
         if (document.hidden) {
-          this.stopMusic();
-          void this.ctx.suspend();
+          fadeOutAndSuspend();
         } else {
+          window.clearTimeout(this.suspendTimer);
           void this.ctx.resume().then(() => {
             this.syncGains();
             this.startMusic();
           });
         }
       });
+
+      window.addEventListener('pagehide', fadeOutAndSuspend);
     }
   }
 
@@ -121,7 +140,13 @@ class AudioEngine {
   }
 
   private isReady(): boolean {
-    return Boolean(this.unlocked && this.ctx && this.sfxGain && !gameState.get().audio.muted);
+    if (!this.unlocked || !this.ctx || !this.sfxGain || gameState.get().audio.muted) {
+      return false;
+    }
+    if (this.ctx.state === 'suspended' && !document.hidden) {
+      void this.ctx.resume();
+    }
+    return true;
   }
 
   startMusic(): void {
@@ -760,24 +785,57 @@ class AudioEngine {
     }
   }
 
+  private async loadVoiceBuffer(url: string): Promise<AudioBuffer> {
+    const cached = this.voiceCache.get(url);
+    if (cached) return cached;
+
+    const existing = this.voicePending.get(url);
+    if (existing) return existing;
+
+    const promise = (async () => {
+      if (!this.ctx) {
+        throw new Error('AudioContext not initialized');
+      }
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch voice clip: ${url}`);
+      }
+      const bytes = await response.arrayBuffer();
+      const buffer = await this.ctx.decodeAudioData(bytes);
+      this.voiceCache.set(url, buffer);
+      return buffer;
+    })().finally(() => {
+      this.voicePending.delete(url);
+    });
+
+    this.voicePending.set(url, promise);
+    return promise;
+  }
+
+  async preloadVoice(url: string): Promise<void> {
+    if (
+      !this.ctx ||
+      !this.unlocked ||
+      this.voiceCache.has(url) ||
+      document.hidden ||
+      gameState.get().audio.muted
+    ) {
+      return;
+    }
+    try {
+      await this.loadVoiceBuffer(url);
+    } catch {
+      // Ignore offline/slow-network preload misses silently.
+    }
+  }
+
   async playVoiceBuffer(url: string, onFrame?: (amp: number) => void): Promise<void> {
     if (!this.ctx || !this.voiceGain || !this.unlocked) return;
 
     this.stopVoice();
     const seq = this.voicePlaySeq;
 
-    let buffer = this.voiceCache.get(url);
-    if (!buffer) {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch voice clip: ${url}`);
-      }
-      const bytes = await response.arrayBuffer();
-      if (seq !== this.voicePlaySeq) return;
-      buffer = await this.ctx.decodeAudioData(bytes);
-      this.voiceCache.set(url, buffer);
-    }
-
+    const buffer = await this.loadVoiceBuffer(url);
     if (seq !== this.voicePlaySeq) return;
 
     return new Promise((resolve) => {

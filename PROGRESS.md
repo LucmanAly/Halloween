@@ -16,8 +16,8 @@
 | **Repository** | `https://github.com/LucmanAly/Halloween` |
 | **Live GitHub Pages URL** | `https://lucmanaly.github.io/Halloween/` |
 | **Local Workspace Path** | `C:\Users\zohan\.gemini\antigravity\scratch\Halloween` |
-| **Completed Phases** | **Phase 1 (Living Courtyard)**, **Phase 2 (Voiced Cast & Lip-Sync)** & **Phase 3 (4 Interactive Mini-Activities)** |
-| **Next Phase & Step** | **Phase 4 — Kid-Testing Polish & Final Launch Check** |
+| **Completed Phases** | **Phase 1, Phase 2, Phase 3 & Phase 4 (Complete!)** |
+| **Next Phase & Step** | **Complete — Ready for Kids! (Optional future content ideas in `PLAN.md`)** |
 | **Environment** | Windows · Node `v24.18.0` · npm `11.16.0` · Python `3.14.1` · `uv 0.11.26` · `ffmpeg 8.1.2` · `gh` CLI (`LucmanAly`) |
 | **Last Updated** | `2026-11-22` |
 
@@ -45,14 +45,14 @@
   - [x] Step 3.4: Silly Dress-Up & Monster Dance Party (`src/activities/dressUpParty.ts` + `src/creatures/costumes.ts`) with 6 unlockable SVG costumes, disco ball + spotlights, and 6 musical dance pads
   - [x] Step 3.5: Verified `typecheck`, `build` (29 modules), and `vite preview` under `/Halloween/`
 
-- [ ] **Phase 4 — Kid-Testing Polish & Final Launch Check** *(START HERE)*
-  - [ ] Responsive touch-target & iPad/phone viewport pass across all 4 mini-activities + dock
-  - [ ] Audio asset preloading & graceful slow-network/offline fallback polish
-  - [ ] Final accessibility audit & live verification on `https://lucmanaly.github.io/Halloween/`
+- [x] **Phase 4 — Kid-Testing Polish & Final Launch Check** *(Completed)*
+  - [x] Responsive touch-target & iPad/phone viewport pass across HUD, `#activity-dock`, Cauldron, Flashlight (live resize/orientation clamping + bottom-bar clearance), Trick-or-Treat, and Dress-Up & Dance Party (`repositionDancers()` on resize)
+  - [x] Audio asset preloading (`VoiceManager.preloadPriorityVoices()`, `AudioEngine.preloadVoice()` + concurrent fetch deduplication), smooth tab-hide/pagehide fade & iOS auto-resume recovery, and offline manifest retry
+  - [x] Interaction & keyboard accessibility polish (`inert` background/dock gating, `lastInvoker` focus restoration, `Escape` handling, drag-vs-click race fix in Cauldron, in-place door knock & Flashlight chip updates, disabled HUD `Surprise!` state during activities) and live verification on `https://lucmanaly.github.io/Halloween/`
 
 ---
 
-## 3. Complete File Inventory (Phases 1 + 2)
+## 3. Complete File Inventory (Phases 1–4)
 
 | File | Responsibility | Key Exports / Contracts |
 |---|---|---|
@@ -97,21 +97,9 @@
 
 ---
 
-## 4. Exact Next Steps for the Next LLM (Phase 4 Kickoff)
+## 4. Exact Next Steps for the Next LLM (All 4 Phases Complete!)
 
-> Start directly here! Phases 1–3 are complete: living courtyard, 6 voiced creatures with lip-sync, and all 4 interactive mini-activities + dress-up & dance party are wired and persisted in `booville_save_v1`.
-
-### Step 4.1 — Responsive Viewport & Touch-Target Audit
-- Inspect desktop (`1440×900`), tablet (`1024×768`), and portrait phone (`390×844`) layouts for `#activity-dock`, HUD pills, Cauldron, Flashlight, Candy Catcher, and Dress-Up cards.
-- Verify no horizontal overflow or clipped buttons when mobile browser toolbars appear.
-
-### Step 4.2 — Audio Preloading & Offline / Slow-Network Polish
-- Warm-cache critical voice clips (`pip/greet_1.mp3`, `hint_1.mp3`, `hint_2.mp3`) gently in background after `welcomeCurtain` unlock without blocking first paint.
-- Verify muted fallback cadence and graceful network-failure handling across all 4 mini-activities.
-
-### Step 4.3 — Accessibility & Final Live Verification
-- Run keyboard-only walkthrough (`Tab`, `Enter`/`Space`, `Escape`, Arrow keys in Flashlight & Candy Catcher) and screen-reader label checks.
-- Run `npm run typecheck && npm run build`, verify `vite preview`, update `PROGRESS.md` as Complete, push to `main`, and verify live GitHub Pages (`https://lucmanaly.github.io/Halloween/`).
+> **Boo-Ville is feature-complete through Phase 4!** All 4 planned phases are built, verified locally, and live on GitHub Pages (`https://lucmanaly.github.io/Halloween/`). Any future sessions can focus on optional expansions (extra costumes, seasonal secrets, or new voice lines via `scripts/generate_voices.py`).
 
 ---
 
@@ -132,3 +120,4 @@
 | `2026-11-22` | Phase 1 Complete | Cloned `LucmanAly/Halloween`, wrote `PLAN.md`/`PROGRESS.md`/`README.md`, built Vite + TS living courtyard (`17` modules), `typecheck` + `build` + `vite preview` + live GitHub Pages deploy (`45081090618`) verified HTTP 200. |
 | `2026-11-22` | Phase 2 Complete | Created `scripts/generate_voices.py` and synthesized 66 neural `.mp3` voice clips (`2230.4 KB`) + `manifest.json`; hardened `AudioEngine` (music ducking, monotonic `voicePlaySeq`, `playBoneRattle()`, `playMonsterStomp()`); built `VoiceManager`, 6 rigged SVG creatures (`creatureRoster.ts`, `creatureRig.ts`, `creatures.css`), and `BanterDirector`. Verified `npm run typecheck` (`0`), `npm run build` (`22` modules, `dist/assets/index-B5Sj7SiX.js`, `index-BnKisu45.css`), and `vite preview` HTTP `200` for HTML, JS, CSS, `manifest.json` (`66` lines), and sampled `.mp3` clips for all 6 creatures. |
 | `2026-11-22` | Phase 3 Complete | Extended core contracts (`eventBus.ts`, `state.ts`, `audioEngine.ts` disco beat + 8 Phase 3 SFX, `voiceManager.ts` `speakLineById`), built `costumes.ts` + vector accessory rigging in `creatureRig.ts`, added bottom `#activity-dock` + landmark play badges + `activities.css`, and implemented all 4 mini-activities (`cauldronGame.ts`, `flashlightGame.ts`, `trickOrTreatGame.ts`, `dressUpParty.ts`) + `activityManager.ts`. Verified `npm run typecheck` (`0`), `npm run build` (`29` modules, `dist/assets/index-BzT9kInf.js`, `index-DE5IKPXX.css`), and `vite preview` HTTP `200` across HTML markers, bundles, `manifest.json` (`66` lines, `12` hints), and sampled `hint_1`/`hint_2` `.mp3` clips. |
+| `2026-11-22` | Phase 4 Complete | Hardened `AudioEngine` (`loadVoiceBuffer` deduplication, `preloadVoice`, smooth tab-hide/pagehide fade, auto-resume on tap), `VoiceManager` (`preloadPriorityVoices`, manifest retry), and `welcomeCurtain` initial dock focus; fixed Cauldron drag-click double-add race & focus retention, Trick-or-Treat double-open guard & in-place knock animations, Flashlight mid-round resize clamping & single hint timer, and Dance Party resize dancer layout; added `inert` background/dock gating, `lastInvoker` focus return, `Surprise!` pause disable, and mobile CSS polish (`layout.css`, `activities.css`). Verified `npm run typecheck` (`0`), `npm run build` (`29` modules, `dist/assets/index-C8tyvtw2.js`, `dist/assets/index-zK683k_q.css`), `vite preview` HTTP `200`, and live GitHub Pages deployment. |

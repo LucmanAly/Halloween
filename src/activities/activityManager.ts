@@ -9,10 +9,15 @@ import type { ActivityController, ActivityDeps } from './types.ts';
 export class ActivityManager {
   private readonly deps: ActivityDeps;
   private readonly controllers: Record<ActivityId, ActivityController>;
+  private readonly sceneLayer: HTMLElement | null;
+  private readonly dockEl: HTMLElement | null;
   private activeId: ActivityId | null = null;
+  private lastInvoker: HTMLElement | null = null;
 
   constructor(deps: ActivityDeps) {
     this.deps = deps;
+    this.sceneLayer = document.getElementById('scene-layer');
+    this.dockEl = document.getElementById('activity-dock');
     const closeActive = () => this.closeActive();
 
     this.controllers = {
@@ -23,6 +28,18 @@ export class ActivityManager {
     };
 
     this.bindTriggers();
+
+    eventBus.on('dance:change', ({ active }) => {
+      if (active) {
+        // Keep courtyard creatures interactive during live Monster Dance Party
+        this.sceneLayer?.removeAttribute('inert');
+        this.dockEl?.setAttribute('inert', '');
+      } else if (this.activeId === 'dress-up') {
+        // Returning from Dance Party back into Dress-Up wardrobe modal
+        this.sceneLayer?.setAttribute('inert', '');
+        this.dockEl?.setAttribute('inert', '');
+      }
+    });
   }
 
   private bindTriggers(): void {
@@ -66,20 +83,46 @@ export class ActivityManager {
 
   openActivity(id: ActivityId): void {
     if (this.activeId === id) return;
-    this.closeActive();
+    if (!this.activeId && document.activeElement instanceof HTMLElement) {
+      this.lastInvoker = document.activeElement;
+    }
+    this.closeActive(false);
 
     this.activeId = id;
     this.deps.stage.classList.add('is-activity-open');
+    this.dockEl?.setAttribute('inert', '');
+    if (id === 'flashlight') {
+      this.sceneLayer?.removeAttribute('inert');
+    } else {
+      this.sceneLayer?.setAttribute('inert', '');
+    }
+    this.syncDockPressed(id);
     eventBus.emit('activity:change', { active: id });
     this.controllers[id].open();
   }
 
-  closeActive(): void {
+  closeActive(restoreFocus = true): void {
     if (!this.activeId) return;
     const prev = this.activeId;
     this.activeId = null;
     this.controllers[prev].close();
     this.deps.stage.classList.remove('is-activity-open');
+    this.sceneLayer?.removeAttribute('inert');
+    this.dockEl?.removeAttribute('inert');
+    this.syncDockPressed(null);
     eventBus.emit('activity:change', { active: null });
+
+    if (restoreFocus && this.lastInvoker?.isConnected) {
+      this.lastInvoker.focus();
+    }
+    if (restoreFocus) {
+      this.lastInvoker = null;
+    }
+  }
+
+  private syncDockPressed(active: ActivityId | null): void {
+    document.querySelectorAll<HTMLButtonElement>('#activity-dock [data-activity]').forEach((btn) => {
+      btn.setAttribute('aria-pressed', String(btn.dataset.activity === active));
+    });
   }
 }

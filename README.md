@@ -6,7 +6,7 @@ An interactive, kid-friendly Halloween courtyard world built for children under 
 - **Master Plan & Architecture:** [`PLAN.md`](./PLAN.md)
 - **Live Progress & LLM Handoff:** [`PROGRESS.md`](./PROGRESS.md)
 
-## Features (Phase 1 + Phase 2 + Phase 3)
+## Features
 - **6 Living Voiced Creatures with Real Lip-Sync:** Pip the Pumpkin, Boo-Bell the Ghost, Winnie the Giggle-Witch, Barnaby the Skeleton, Frankie the Gentle Monster, and Bitey the Tiny Bat roam the courtyard, follow your finger/cursor with their eyes, react with unique animated tap gags, chat in 2-line voiced banter, and speak 66 pre-generated neural character lines synced at 60fps via Web Audio `AnalyserNode`.
 - **4 Interactive Mini-Activities (Phase 3):**
   - **🧪 Winnie's Wacky Cauldron:** Drag or tap silly ingredients, swirl the pot, and discover 8 wacky full-screen spells in your Spell Book.
@@ -16,7 +16,7 @@ An interactive, kid-friendly Halloween courtyard world built for children under 
 - **Animated Boo-Ville Courtyard:** Glowing pumpkins, haunted manor with peeking windows, musical xylophone fence, bubbling cauldron, whispering tree, friendly spider, and bonus rattling tombstone.
 - **60fps Canvas Effects:** Ambient fireflies, drifting autumn leaves, poppable rainbow bubbles, shooting stars, and sparkle confetti bursts.
 - **10 Discoverable Secrets & Autonomous Surprises:** Bubble Storm, Runaway Candy Cart, Shooting Star Shower, and Playful Bat Flock.
-- **Kid-Safe Controls:** Audio mute, independent music & voice/SFX sliders, Gentle Motion toggle, Easy/Playful age mode, and 2-step reset protection.
+- **Kid-Safe Controls & Accessibility:** Audio mute, independent music & voice/SFX sliders, Gentle Motion toggle, Easy/Playful age mode, 2-step reset protection, gentle background voice preloading, smooth tab-switch audio fade/resume, and full keyboard navigation (`Tab`, `Enter`/`Space`, `Escape`, Arrow/WASD steering).
 
 ## Local Development
 

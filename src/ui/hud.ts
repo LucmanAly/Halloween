@@ -84,6 +84,12 @@ export function initHud(
     renderAudio();
   });
 
+  eventBus.on('activity:change', ({ active }) => {
+    if (surpriseBtn instanceof HTMLButtonElement) {
+      surpriseBtn.disabled = active !== null;
+    }
+  });
+
   surpriseBtn?.addEventListener('click', () => {
     worldEvents.triggerRandomOrNext();
   });
