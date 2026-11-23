@@ -78,6 +78,15 @@ export class VoiceManager {
     return chosen;
   }
 
+  getLineById(creatureId: CreatureId, lineId: string): VoiceLine | null {
+    if (!this.manifest) return null;
+    return (
+      this.manifest.lines.find(
+        (line) => line.creatureId === creatureId && line.id === lineId,
+      ) ?? null
+    );
+  }
+
   getBanterPairs(): BanterPair[] {
     if (!this.manifest) return [];
     const byPair = new Map<string, { a?: VoiceLine; b?: VoiceLine }>();
@@ -111,7 +120,12 @@ export class VoiceManager {
   async speakCategory(
     creature: CreatureInstance,
     category: VoiceCategory,
-    options?: { bubbleColor?: string },
+    options?: {
+      bubbleColor?: string;
+      bubblePos?: { x: number; y: number };
+      showBubble?: boolean;
+      animateCreature?: boolean;
+    },
   ): Promise<boolean> {
     if (!this.manifest) {
       await this.load();
@@ -121,20 +135,51 @@ export class VoiceManager {
     return this.speakLine(line, creature, options);
   }
 
+  async speakLineById(
+    creatureId: CreatureId,
+    lineId: string,
+    creature: CreatureInstance | null,
+    options?: {
+      bubbleColor?: string;
+      bubblePos?: { x: number; y: number };
+      showBubble?: boolean;
+      animateCreature?: boolean;
+    },
+  ): Promise<boolean> {
+    if (!this.manifest) {
+      await this.load();
+    }
+    const line = this.getLineById(creatureId, lineId);
+    if (!line) return false;
+    return this.speakLine(line, creature, options);
+  }
+
   async speakLine(
     line: VoiceLine,
-    creature: CreatureInstance,
-    options?: { bubbleColor?: string },
+    creature: CreatureInstance | null,
+    options?: {
+      bubbleColor?: string;
+      bubblePos?: { x: number; y: number };
+      showBubble?: boolean;
+      animateCreature?: boolean;
+    },
   ): Promise<boolean> {
     this.stopAll();
     const seq = ++this.speakSeq;
 
-    const rect = creature.root.getBoundingClientRect();
-    const bubbleX = rect.width > 0 ? rect.left + rect.width * 0.5 : window.innerWidth * 0.5;
-    const bubbleY = rect.height > 0 ? rect.top - 8 : window.innerHeight * 0.45;
+    const animate = Boolean(creature && options?.animateCreature !== false);
+    const rect = creature ? creature.root.getBoundingClientRect() : null;
+    const bubbleX =
+      options?.bubblePos?.x ??
+      (rect && rect.width > 0 ? rect.left + rect.width * 0.5 : window.innerWidth * 0.5);
+    const bubbleY =
+      options?.bubblePos?.y ??
+      (rect && rect.height > 0 ? rect.top - 8 : window.innerHeight * 0.25);
 
-    this.activeSpeaker = creature.config.id;
-    creature.root.classList.add('is-talking');
+    this.activeSpeaker = line.creatureId;
+    if (animate && creature) {
+      creature.root.classList.add('is-talking');
+    }
 
     let cleaned = false;
     let fallbackTimer = 0;
@@ -146,8 +191,10 @@ export class VoiceManager {
         window.clearInterval(fallbackTimer);
         fallbackTimer = 0;
       }
-      creature.root.classList.remove('is-talking');
-      creature.setMouth('smile');
+      if (animate && creature) {
+        creature.root.classList.remove('is-talking');
+        creature.setMouth('smile');
+      }
       if (seq === this.speakSeq) {
         this.activeSpeaker = null;
       }
@@ -158,39 +205,56 @@ export class VoiceManager {
     this.activeCleanup = cleanup;
 
     eventBus.emit('creature:speak', {
-      creatureId: creature.config.id,
+      creatureId: line.creatureId,
       lineId: line.id,
       text: line.text,
     });
 
-    eventBus.emit('world:speech', {
-      emoji: line.emoji,
-      text: line.text,
-      x: bubbleX,
-      y: bubbleY,
-      color: options?.bubbleColor ?? creature.config.bubbleColor,
-      durationMs: Math.max(2200, line.durationMs + 450),
-    });
+    if (options?.showBubble !== false) {
+      eventBus.emit('world:speech', {
+        emoji: line.emoji,
+        text: line.text,
+        x: bubbleX,
+        y: bubbleY,
+        color: options?.bubbleColor ?? creature?.config.bubbleColor ?? '#ffd166',
+        durationMs: Math.max(2200, line.durationMs + 450),
+      });
+    }
 
     const isMuted = gameState.get().audio.muted;
     const clipUrl = `${import.meta.env.BASE_URL}${line.file}`;
 
     try {
       if (!isMuted) {
-        await audioEngine.playVoiceBuffer(clipUrl, (amp) => {
-          if (seq !== this.speakSeq) return;
-          creature.setMouth(this.amplitudeToMouth(amp));
-        });
+        await audioEngine.playVoiceBuffer(
+          clipUrl,
+          animate && creature
+            ? (amp) => {
+                if (seq !== this.speakSeq) return;
+                creature.setMouth(this.amplitudeToMouth(amp));
+              }
+            : undefined,
+        );
       } else {
-        await this.runSilentLipSync(seq, line.durationMs, creature, (timerId) => {
-          fallbackTimer = timerId;
-        });
+        await this.runSilentLipSync(
+          seq,
+          line.durationMs,
+          animate ? creature : null,
+          (timerId) => {
+            fallbackTimer = timerId;
+          },
+        );
       }
     } catch {
       if (seq === this.speakSeq) {
-        await this.runSilentLipSync(seq, line.durationMs, creature, (timerId) => {
-          fallbackTimer = timerId;
-        });
+        await this.runSilentLipSync(
+          seq,
+          line.durationMs,
+          animate ? creature : null,
+          (timerId) => {
+            fallbackTimer = timerId;
+          },
+        );
       }
     } finally {
       cleanup();
@@ -202,7 +266,7 @@ export class VoiceManager {
   private runSilentLipSync(
     seq: number,
     durationMs: number,
-    creature: CreatureInstance,
+    creature: CreatureInstance | null,
     registerTimer: (id: number) => void,
   ): Promise<void> {
     const cadence: MouthShape[] = ['small', 'open', 'wide', 'small', 'closed', 'open'];
@@ -216,7 +280,7 @@ export class VoiceManager {
           resolve();
           return;
         }
-        creature.setMouth(cadence[step % cadence.length]);
+        creature?.setMouth(cadence[step % cadence.length]);
         step += 1;
       }, 130);
       registerTimer(id);

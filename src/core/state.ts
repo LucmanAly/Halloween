@@ -63,7 +63,11 @@ function loadState(): SaveState {
         : [],
       equippedCostumes:
         parsed.equippedCostumes && typeof parsed.equippedCostumes === 'object'
-          ? { ...parsed.equippedCostumes }
+          ? Object.fromEntries(
+              Object.entries(parsed.equippedCostumes).filter(
+                (entry): entry is [string, string] => typeof entry[1] === 'string',
+              ),
+            )
           : {},
       audio: {
         muted: Boolean(parsed.audio?.muted ?? defaults.audio.muted),
@@ -100,6 +104,47 @@ class StateStore {
     this.state.candy += delta;
     this.persist();
     eventBus.emit('candy:add', { amount: delta, x, y, source });
+  }
+
+  spendCandy(amount: number, source = 'shop'): boolean {
+    if (!Number.isFinite(amount) || amount <= 0) return false;
+    const cost = Math.round(amount);
+    if (this.state.candy < cost) return false;
+    this.state.candy -= cost;
+    this.persist();
+    eventBus.emit('candy:spend', { amount: cost, source });
+    return true;
+  }
+
+  discoverPotion(recipeId: string): boolean {
+    if (this.state.potionsDiscovered.includes(recipeId)) return false;
+    this.state.potionsDiscovered = [...this.state.potionsDiscovered, recipeId];
+    this.persist();
+    eventBus.emit('potion:discovered', {
+      recipeId,
+      total: this.state.potionsDiscovered.length,
+    });
+    return true;
+  }
+
+  unlockCostume(costumeId: string): boolean {
+    if (this.state.unlockedCostumes.includes(costumeId)) return false;
+    this.state.unlockedCostumes = [...this.state.unlockedCostumes, costumeId];
+    this.persist();
+    eventBus.emit('costume:unlocked', { costumeId });
+    return true;
+  }
+
+  equipCostume(creatureId: string, costumeId: string | null): void {
+    const next = { ...this.state.equippedCostumes };
+    if (costumeId) {
+      next[creatureId] = costumeId;
+    } else {
+      delete next[creatureId];
+    }
+    this.state.equippedCostumes = next;
+    this.persist();
+    eventBus.emit('costume:equipped', { creatureId, costumeId });
   }
 
   discoverSecret(id: string, label: string, x: number, y: number): boolean {

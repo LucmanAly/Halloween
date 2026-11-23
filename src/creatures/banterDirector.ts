@@ -49,6 +49,9 @@ export class BanterDirector {
   private rafId = 0;
   private lastFrameMs = 0;
   private started = false;
+  private activityLocked = false;
+  private danceMode = false;
+  private tapInterceptor: ((id: CreatureId, clientX: number, clientY: number) => boolean) | null = null;
   private banterTimer = 0;
   private banterSeq = 0;
   private lastBanterPairId = '';
@@ -95,6 +98,10 @@ export class BanterDirector {
         speed,
       };
       instance.setPosition(actor.x, actor.y, actor.facing);
+      const savedCostume = gameState.get().equippedCostumes[config.id] ?? null;
+      if (savedCostume) {
+        instance.setCostume(savedCostume);
+      }
       this.actors.set(config.id, actor);
 
       const interactive = instance.root.querySelector<SVGGElement>('.creature-interactive');
@@ -135,7 +142,15 @@ export class BanterDirector {
 
     eventBus.on('world:event', ({ type }) => {
       window.setTimeout(() => {
-        if (!this.started || document.hidden || this.voiceManager.isSpeaking()) return;
+        if (
+          !this.started ||
+          this.activityLocked ||
+          this.danceMode ||
+          document.hidden ||
+          this.voiceManager.isSpeaking()
+        ) {
+          return;
+        }
         const pool = WORLD_EVENT_SPEAKERS[type] ?? ['pip'];
         const chosenId = pool[Math.floor(Math.random() * pool.length)];
         const actor = this.actors.get(chosenId);
@@ -144,6 +159,17 @@ export class BanterDirector {
         actor.instance.playTapGag();
         void this.voiceManager.speakCategory(actor.instance, 'world_react');
       }, 550);
+    });
+
+    eventBus.on('costume:equipped', ({ creatureId, costumeId }) => {
+      const actor = this.actors.get(creatureId as CreatureId);
+      actor?.instance.setCostume(costumeId);
+    });
+
+    eventBus.on('state:reset', () => {
+      for (const actor of this.actors.values()) {
+        actor.instance.setCostume(null);
+      }
     });
 
     document.addEventListener('visibilitychange', () => {
@@ -166,6 +192,13 @@ export class BanterDirector {
   }
 
   private onCreatureActivated(id: CreatureId, clientX: number, clientY: number): void {
+    if (this.tapInterceptor?.(id, clientX, clientY)) {
+      return;
+    }
+    if (this.activityLocked) {
+      return;
+    }
+
     const actor = this.actors.get(id);
     if (!actor) return;
 
@@ -263,6 +296,8 @@ export class BanterDirector {
 
   private async tryRunBanter(): Promise<void> {
     if (
+      this.activityLocked ||
+      this.danceMode ||
       document.hidden ||
       this.voiceManager.isSpeaking() ||
       performance.now() - this.lastUserInteractionAt < 6000
@@ -309,6 +344,9 @@ export class BanterDirector {
   }
 
   private updateMotion(dt: number, now: number): void {
+    if (this.activityLocked || this.danceMode) {
+      return;
+    }
     const reduced = gameState.get().reducedMotion;
     if (reduced) {
       for (const actor of this.actors.values()) {
@@ -394,6 +432,136 @@ export class BanterDirector {
     this.lastOrderKey = key;
     for (const actor of ordered) {
       this.stageLayer.appendChild(actor.instance.root);
+    }
+  }
+
+  // --- Phase 3 Activity Coordination API ---
+
+  setActivityMode(locked: boolean): void {
+    this.activityLocked = locked;
+    this.banterSeq += 1;
+    if (locked) {
+      this.voiceManager.stopAll();
+      for (const actor of this.actors.values()) {
+        actor.mode = 'idle';
+        actor.instance.root.classList.remove('is-walking');
+      }
+    } else {
+      this.lastFrameMs = performance.now();
+    }
+  }
+
+  setTapInterceptor(
+    interceptor: ((id: CreatureId, clientX: number, clientY: number) => boolean) | null,
+  ): void {
+    this.tapInterceptor = interceptor;
+  }
+
+  getCreature(id: CreatureId): CreatureInstance | undefined {
+    return this.actors.get(id)?.instance;
+  }
+
+  getCreatures(): CreatureInstance[] {
+    return Array.from(this.actors.values(), (actor) => actor.instance);
+  }
+
+  getVisibleSvgBounds(): { minX: number; maxX: number; minY: number; maxY: number } {
+    const rect = this.stage.getBoundingClientRect();
+    const tl = this.clientToSvg(rect.left + 32, rect.top + 88);
+    const br = this.clientToSvg(rect.right - 32, rect.bottom - 90);
+    if (!tl || !br) {
+      return { minX: 180, maxX: 1420, minY: 130, maxY: 790 };
+    }
+    return {
+      minX: Math.max(120, Math.min(tl.x, br.x)),
+      maxX: Math.min(1480, Math.max(tl.x, br.x)),
+      minY: Math.max(95, Math.min(tl.y, br.y)),
+      maxY: Math.min(820, Math.max(tl.y, br.y)),
+    };
+  }
+
+  placeCreature(id: CreatureId, svgX: number, svgY: number, facing: 1 | -1): void {
+    const actor = this.actors.get(id);
+    if (!actor) return;
+    actor.x = svgX;
+    actor.y = svgY;
+    actor.facing = facing;
+    actor.mode = 'idle';
+    actor.instance.root.classList.remove('is-walking');
+    actor.instance.setPosition(svgX, svgY, facing);
+    this.sortStageDepth();
+  }
+
+  setCreatureHiding(id: CreatureId, hiding: boolean): void {
+    const actor = this.actors.get(id);
+    if (!actor) return;
+    actor.instance.root.classList.toggle('is-hiding', hiding);
+    actor.instance.root.style.display = '';
+  }
+
+  setCreatureVisible(id: CreatureId, visible: boolean): void {
+    const actor = this.actors.get(id);
+    if (!actor) return;
+    actor.instance.root.style.display = visible ? '' : 'none';
+  }
+
+  restoreAllCreatures(): void {
+    this.tapInterceptor = null;
+    for (const actor of this.actors.values()) {
+      const cfg = actor.instance.config;
+      actor.x = cfg.homeX;
+      actor.y = cfg.homeY;
+      actor.targetX = cfg.homeX;
+      actor.targetY = cfg.homeY;
+      actor.facing = cfg.homeX > 800 ? -1 : 1;
+      actor.mode = 'idle';
+      actor.waitSec = 1.2 + Math.random() * 2;
+      actor.pausedUntil = 0;
+      actor.instance.root.style.display = '';
+      actor.instance.root.classList.remove('is-hiding', 'is-dancing', 'is-walking', 'is-found-pop');
+      actor.instance.setPosition(actor.x, actor.y, actor.facing);
+    }
+    this.sortStageDepth();
+  }
+
+  setDanceMode(active: boolean): void {
+    if (this.danceMode === active) return;
+    this.danceMode = active;
+    this.banterSeq += 1;
+    audioEngine.setPartyMode(active);
+    eventBus.emit('dance:change', { active });
+
+    if (active) {
+      this.voiceManager.stopAll();
+      const vis = this.getVisibleSvgBounds();
+      const span = Math.max(260, vis.maxX - vis.minX);
+      const centerX = (vis.minX + vis.maxX) * 0.5;
+      const groundY = Math.min(735, Math.max(660, vis.maxY - 24));
+      const airY = Math.max(210, Math.min(340, vis.minY + 125));
+
+      const groundIds: CreatureId[] = ['pip', 'barnaby', 'winnie', 'frankie'];
+      groundIds.forEach((id, idx) => {
+        const frac = 0.14 + (idx / (groundIds.length - 1)) * 0.72;
+        const x = vis.minX + span * frac;
+        const y = groundY + (idx % 2 === 0 ? -10 : 14);
+        this.placeCreature(id, x, y, x <= centerX ? 1 : -1);
+      });
+
+      this.placeCreature('boobell', vis.minX + span * 0.3, airY, 1);
+      this.placeCreature('bitey', vis.minX + span * 0.7, airY - 12, -1);
+
+      for (const actor of this.actors.values()) {
+        actor.instance.root.classList.add('is-dancing');
+      }
+    } else {
+      this.restoreAllCreatures();
+      this.lastFrameMs = performance.now();
+    }
+  }
+
+  triggerAllTapGags(): void {
+    for (const actor of this.actors.values()) {
+      actor.instance.playTapGag();
     }
   }
 }

@@ -22,6 +22,7 @@ export class WorldEventsDirector {
   private eventIndex = 0;
   private cartTapsRemaining = 0;
   private started = false;
+  private paused = false;
   private lastManualTrigger = 0;
 
   constructor(svg: SVGSVGElement, particles: ParticleCanvas) {
@@ -74,10 +75,25 @@ export class WorldEventsDirector {
     }
   }
 
+  setPaused(paused: boolean): void {
+    this.paused = paused;
+    if (paused) {
+      if (this.timerId !== null) {
+        window.clearTimeout(this.timerId);
+        this.timerId = null;
+      }
+      return;
+    }
+    if (this.started && this.timerId === null) {
+      this.scheduleNext(14000);
+    }
+  }
+
   private scheduleNext(delayMs: number): void {
     if (this.timerId !== null) window.clearTimeout(this.timerId);
+    if (this.paused) return;
     this.timerId = window.setTimeout(() => {
-      if (!this.started) return;
+      if (!this.started || this.paused) return;
       this.triggerNext();
       const nextDelay = 18000 + Math.random() * 8000;
       this.scheduleNext(nextDelay);
@@ -85,6 +101,7 @@ export class WorldEventsDirector {
   }
 
   triggerRandomOrNext(): boolean {
+    if (this.paused) return false;
     const now = performance.now();
     if (now - this.lastManualTrigger < 1400) return false;
     this.lastManualTrigger = now;

@@ -6,8 +6,13 @@ An interactive, kid-friendly Halloween courtyard world built for children under 
 - **Master Plan & Architecture:** [`PLAN.md`](./PLAN.md)
 - **Live Progress & LLM Handoff:** [`PROGRESS.md`](./PROGRESS.md)
 
-## Features (Phase 1 + Phase 2)
+## Features (Phase 1 + Phase 2 + Phase 3)
 - **6 Living Voiced Creatures with Real Lip-Sync:** Pip the Pumpkin, Boo-Bell the Ghost, Winnie the Giggle-Witch, Barnaby the Skeleton, Frankie the Gentle Monster, and Bitey the Tiny Bat roam the courtyard, follow your finger/cursor with their eyes, react with unique animated tap gags, chat in 2-line voiced banter, and speak 66 pre-generated neural character lines synced at 60fps via Web Audio `AnalyserNode`.
+- **4 Interactive Mini-Activities (Phase 3):**
+  - **🧪 Winnie's Wacky Cauldron:** Drag or tap silly ingredients, swirl the pot, and discover 8 wacky full-screen spells in your Spell Book.
+  - **🔦 Flashlight Hide-and-Seek:** Sweep a glowing spotlight across the darkened courtyard with hot/cold radar pings and voiced hints (`hint_1`) to pop hiding friends out.
+  - **🚪 Knock-Knock Trick-or-Treat:** Knock on the haunted door, guess the visitor from their voiced clue (`hint_2`), and catch falling candy with your pumpkin bucket while dodging goofy socks and broccoli.
+  - **🎩 Silly Dress-Up & Monster Dance Party:** Unlock 6 SVG costumes with Magic Candy, dress up any creature, drop the pumpkin disco ball, and tap dancing friends as live musical instrument pads!
 - **Animated Boo-Ville Courtyard:** Glowing pumpkins, haunted manor with peeking windows, musical xylophone fence, bubbling cauldron, whispering tree, friendly spider, and bonus rattling tombstone.
 - **60fps Canvas Effects:** Ambient fireflies, drifting autumn leaves, poppable rainbow bubbles, shooting stars, and sparkle confetti bursts.
 - **10 Discoverable Secrets & Autonomous Surprises:** Bubble Storm, Runaway Candy Cart, Shooting Star Shower, and Playful Bat Flock.

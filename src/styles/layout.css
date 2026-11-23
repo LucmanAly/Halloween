@@ -56,6 +56,126 @@ button {
   block-size: 100%;
 }
 
+.stage-fx-layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-stage-fx);
+  pointer-events: none;
+  overflow: clip;
+}
+
+.stage-fx-layer.is-interactive {
+  pointer-events: auto;
+}
+
+.activity-layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-activity);
+  pointer-events: none;
+  overflow: clip;
+}
+
+/* Landmark Play Badges inside Courtyard SVG */
+.landmark-badge {
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: badge-bob 2.6s ease-in-out infinite;
+  transition: filter 0.16s ease, transform 0.16s ease;
+}
+
+.landmark-badge:hover {
+  filter: drop-shadow(0 0 12px rgba(255, 224, 102, 0.8));
+}
+
+.landmark-badge:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 14px #ffd166);
+}
+
+@keyframes badge-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Bottom Activity Dock */
+.activity-dock {
+  position: absolute;
+  inset-block-end: max(14px, env(safe-area-inset-bottom));
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-hud);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-pill);
+  border: 2.5px solid var(--color-border-glow);
+  background: rgba(29, 13, 58, 0.88);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 32px rgba(10, 4, 24, 0.55);
+  max-inline-size: calc(100vw - 20px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.stage.is-activity-open .activity-dock,
+.stage.is-dance-party .activity-dock {
+  opacity: 0;
+  transform: translate(-50%, 120%);
+  pointer-events: none;
+}
+
+.dock-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-inline-size: 56px;
+  min-block-size: 52px;
+  padding-inline: 16px;
+  padding-block: 8px;
+  border-radius: var(--radius-pill);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  background: rgba(71, 36, 128, 0.68);
+  color: var(--color-text);
+  font-size: clamp(0.95rem, 2vw, 1.08rem);
+  font-weight: 700;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.dock-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  border-color: var(--color-candy-gold);
+  background: rgba(104, 52, 182, 0.9);
+}
+
+.dock-btn:active {
+  transform: scale(0.95);
+}
+
+.dock-emoji {
+  font-size: 1.35em;
+  line-height: 1;
+}
+
+.dock-badge {
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 209, 102, 0.22);
+  border: 1.5px solid rgba(255, 209, 102, 0.55);
+  color: var(--color-candy-gold);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 .particle-canvas {
   position: absolute;
   inset: 0;
@@ -307,9 +427,18 @@ button {
   overflow-y: auto;
 }
 
+dialog:modal {
+  overscroll-behavior: contain;
+}
+
 .settings-dialog::backdrop {
   background: rgba(12, 5, 26, 0.72);
   backdrop-filter: blur(5px);
+}
+
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 .settings-header {
@@ -467,10 +596,37 @@ button {
   .hud-btn {
     padding-inline: 12px;
   }
+
+  .activity-dock {
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  .dock-btn {
+    flex-direction: column;
+    gap: 2px;
+    min-inline-size: 64px;
+    min-block-size: 54px;
+    padding-inline: 10px;
+    padding-block: 6px;
+    font-size: 0.78rem;
+  }
+
+  .dock-badge {
+    position: absolute;
+    inset-block-start: -6px;
+    inset-inline-end: -4px;
+    background: #2b1350;
+  }
+}
+
+:root[data-reduced-motion='true'] .landmark-badge {
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .welcome-pumpkin {
+  .welcome-pumpkin,
+  .landmark-badge {
     animation: none;
   }
 }

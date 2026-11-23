@@ -296,9 +296,73 @@
   }
 }
 
+/* Phase 3: Hat-slot replacement, Hide-and-Seek & Monster Dance Party */
+.creature-winnie.has-hat-costume .winnie-hat {
+  display: none;
+}
+
+.creature-root.is-hiding .creature-motion {
+  opacity: 0.88;
+  transform: scale(0.92);
+}
+
+.creature-root.is-found-pop .creature-motion {
+  animation: found-pop-anim 0.72s cubic-bezier(0.22, 1.5, 0.36, 1);
+}
+
+@keyframes found-pop-anim {
+  0% {
+    transform: scale(0.75) translateY(12px);
+  }
+  50% {
+    transform: scale(1.22) translateY(-24px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+.creature-root.is-dancing .creature-motion {
+  animation: monster-dance 0.68s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(255, 224, 102, 0.45));
+}
+
+.creature-boobell.is-dancing .creature-motion {
+  animation-delay: 0.12s;
+}
+.creature-winnie.is-dancing .creature-motion {
+  animation-delay: 0.24s;
+}
+.creature-barnaby.is-dancing .creature-motion {
+  animation-delay: 0.08s;
+}
+.creature-frankie.is-dancing .creature-motion {
+  animation-delay: 0.3s;
+}
+.creature-bitey.is-dancing .creature-motion {
+  animation-delay: 0.18s;
+}
+
+@keyframes monster-dance {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-6deg) scale(1, 1);
+  }
+  25% {
+    transform: translateY(-16px) rotate(0deg) scale(0.96, 1.07);
+  }
+  50% {
+    transform: translateY(0) rotate(6deg) scale(1.06, 0.94);
+  }
+  75% {
+    transform: translateY(-14px) rotate(-2deg) scale(0.97, 1.05);
+  }
+}
+
 /* Reduced Motion Respect (keep crisp mouth lip-sync active) */
 :root[data-reduced-motion='true'] .creature-eyes,
 :root[data-reduced-motion='true'] .creature-root.is-walking .creature-motion,
+:root[data-reduced-motion='true'] .creature-root.is-dancing .creature-motion,
 :root[data-reduced-motion='true'] .creature-boobell .creature-motion,
 :root[data-reduced-motion='true'] .creature-bitey .creature-motion,
 :root[data-reduced-motion='true'] .wing-left,
@@ -309,6 +373,7 @@
 @media (prefers-reduced-motion: reduce) {
   .creature-eyes,
   .creature-root.is-walking .creature-motion,
+  .creature-root.is-dancing .creature-motion,
   .creature-boobell .creature-motion,
   .creature-bitey .creature-motion,
   .wing-left,

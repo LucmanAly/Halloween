@@ -1,8 +1,11 @@
 import { audioEngine } from '../core/audioEngine.ts';
 import { eventBus } from '../core/eventBus.ts';
 import { gameState } from '../core/state.ts';
+import { COSTUMES_CATALOG, TOTAL_COSTUMES, isCostumeUnlocked } from '../creatures/costumes.ts';
 import { TOTAL_SECRETS } from '../world/secretsCatalog.ts';
 import { WorldEventsDirector } from '../world/worldEvents.ts';
+
+const TOTAL_POTIONS = 8;
 
 export function initHud(
   worldEvents: WorldEventsDirector,
@@ -11,6 +14,8 @@ export function initHud(
   const candyPill = document.getElementById('candy-pill');
   const candyCount = document.getElementById('candy-count');
   const secretsCount = document.getElementById('secrets-count');
+  const potionsBadge = document.getElementById('dock-potions-badge');
+  const costumesBadge = document.getElementById('dock-costumes-badge');
   const surpriseBtn = document.getElementById('surprise-btn');
   const muteBtn = document.getElementById('mute-btn');
   const muteIcon = document.getElementById('mute-icon');
@@ -21,6 +26,15 @@ export function initHud(
     if (candyCount) candyCount.textContent = String(state.candy);
     if (secretsCount) {
       secretsCount.textContent = `${state.secretsFound.length} / ${TOTAL_SECRETS}`;
+    }
+    if (potionsBadge) {
+      potionsBadge.textContent = `${state.potionsDiscovered.length}/${TOTAL_POTIONS}`;
+    }
+    if (costumesBadge) {
+      const unlockedCount = COSTUMES_CATALOG.filter((c) =>
+        isCostumeUnlocked(c.id, state.unlockedCostumes),
+      ).length;
+      costumesBadge.textContent = `${unlockedCount}/${TOTAL_COSTUMES}`;
     }
   };
 
@@ -45,7 +59,20 @@ export function initHud(
     bumpCandy();
   });
 
+  eventBus.on('candy:spend', () => {
+    renderCounts();
+    bumpCandy();
+  });
+
   eventBus.on('secret:discovered', () => {
+    renderCounts();
+  });
+
+  eventBus.on('potion:discovered', () => {
+    renderCounts();
+  });
+
+  eventBus.on('costume:unlocked', () => {
     renderCounts();
   });
 

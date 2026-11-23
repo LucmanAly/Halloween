@@ -1,3 +1,8 @@
+import {
+  CREATURE_ACCESSORY_ANCHORS,
+  getCostumeDef,
+  renderCostumeMarkup,
+} from './costumes.ts';
 import type { CreatureConfig, CreatureId, CreatureInstance, MouthShape } from './types.ts';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -98,7 +103,7 @@ function renderCharacterArtwork(id: CreatureId): string {
         <ellipse class="creature-cheek" cx="22" cy="-42" rx="6.5" ry="3.8" fill="#ff5d8f" opacity="0.55" />
         ${renderEyes(-14, 14, -55, 8.2)}
         ${renderMouth(0, -37, 1)}
-        <g class="creature-hat-slot" transform="translate(0, -86)"></g>
+        <g class="creature-hat-slot"></g>
       `;
 
     case 'boobell':
@@ -122,7 +127,7 @@ function renderCharacterArtwork(id: CreatureId): string {
         <ellipse class="creature-cheek" cx="20" cy="0" rx="6.5" ry="3.8" fill="#ff85b3" opacity="0.7" />
         ${renderEyes(-12, 12, -12, 8.2)}
         ${renderMouth(0, 6, 0.92)}
-        <g class="creature-hat-slot" transform="translate(0, -52)"></g>
+        <g class="creature-hat-slot"></g>
       `;
 
     case 'winnie':
@@ -159,7 +164,7 @@ function renderCharacterArtwork(id: CreatureId): string {
           <path d="M-16,-6 Q0,-2 16,-6" fill="none" stroke="#ffd166" stroke-width="4" />
           <circle cx="-2" cy="-20" r="3" fill="#ffd166" />
         </g>
-        <g class="creature-hat-slot" transform="translate(0, -118)"></g>
+        <g class="creature-hat-slot"></g>
       `;
 
     case 'barnaby':
@@ -191,7 +196,7 @@ function renderCharacterArtwork(id: CreatureId): string {
           ${renderEyes(-10, 10, -78, 7.6, '#391963')}
           ${renderMouth(0, -60, 0.9)}
         </g>
-        <g class="creature-hat-slot" transform="translate(0, -100)"></g>
+        <g class="creature-hat-slot"></g>
       `;
 
     case 'frankie':
@@ -222,7 +227,7 @@ function renderCharacterArtwork(id: CreatureId): string {
         <ellipse class="creature-cheek" cx="18" cy="-76" rx="5.5" ry="3.2" fill="#ff7ca8" opacity="0.55" />
         ${renderEyes(-11, 11, -88, 7.6)}
         ${renderMouth(0, -72, 1)}
-        <g class="creature-hat-slot" transform="translate(0, -116)"></g>
+        <g class="creature-hat-slot"></g>
       `;
 
     case 'bitey':
@@ -245,9 +250,37 @@ function renderCharacterArtwork(id: CreatureId): string {
         <ellipse class="creature-cheek" cx="14" cy="2" rx="4.5" ry="2.6" fill="#ff85b3" opacity="0.7" />
         ${renderEyes(-9, 9, -6, 6.8)}
         ${renderMouth(0, 8, 0.85, true)}
-        <g class="creature-hat-slot" transform="translate(0, -25)"></g>
+        <g class="creature-hat-slot"></g>
       `;
   }
+}
+
+function buildAccessoryMarkup(id: CreatureId, costumeId: string | null | undefined): string {
+  if (!costumeId) return '';
+  const def = getCostumeDef(costumeId);
+  if (!def) return '';
+  const anchor = CREATURE_ACCESSORY_ANCHORS[id][def.slot];
+  return `<g data-costume="${costumeId}" transform="translate(0, ${anchor.y}) scale(${anchor.scale})">${renderCostumeMarkup(costumeId)}</g>`;
+}
+
+const PORTRAIT_VIEWBOX: Record<CreatureId, string> = {
+  pip: '-58 -134 116 146',
+  boobell: '-54 -84 108 134',
+  winnie: '-54 -146 108 156',
+  barnaby: '-52 -136 104 146',
+  frankie: '-62 -152 124 162',
+  bitey: '-62 -64 124 108',
+};
+
+export function renderCreatureArtSvg(id: CreatureId, costumeId?: string | null): string {
+  const def = costumeId ? getCostumeDef(costumeId) : undefined;
+  const hatClass = def?.slot === 'hat' ? ' has-hat-costume' : '';
+  const accessoryMarkup = buildAccessoryMarkup(id, costumeId);
+  return `
+    <svg viewBox="${PORTRAIT_VIEWBOX[id]}" class="creature-portrait-svg creature-${id}${hatClass}" aria-hidden="true">
+      ${renderCharacterArtwork(id).replace('<g class="creature-hat-slot"></g>', `<g class="creature-hat-slot">${accessoryMarkup}</g>`)}
+    </svg>
+  `.trim();
 }
 
 export function createCreatureRig(config: CreatureConfig): CreatureInstance {
@@ -315,15 +348,9 @@ export function createCreatureRig(config: CreatureConfig): CreatureInstance {
       }, meta.gagDurationMs);
     },
     setCostume(costumeId: string | null): void {
-      hatSlotEl.innerHTML = '';
-      if (!costumeId) return;
-      const badge = document.createElementNS(SVG_NS, 'circle');
-      badge.setAttribute('cx', '0');
-      badge.setAttribute('cy', '-4');
-      badge.setAttribute('r', '5');
-      badge.setAttribute('fill', '#ffd166');
-      badge.setAttribute('data-costume', costumeId);
-      hatSlotEl.appendChild(badge);
+      const def = costumeId ? getCostumeDef(costumeId) : undefined;
+      root.classList.toggle('has-hat-costume', def?.slot === 'hat');
+      hatSlotEl.innerHTML = buildAccessoryMarkup(config.id, costumeId);
     },
   };
 }

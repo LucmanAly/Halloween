@@ -22,8 +22,10 @@
   --shadow-glow: 0 0 24px rgba(255, 195, 77, 0.35);
 
   --z-scene: 1;
-  --z-canvas: 2;
-  --z-speech: 3;
-  --z-hud: 4;
+  --z-stage-fx: 2;
+  --z-activity: 3;
+  --z-canvas: 4;
+  --z-speech: 5;
+  --z-hud: 6;
   --z-curtain: 10;
 }

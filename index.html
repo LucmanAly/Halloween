@@ -20,7 +20,7 @@
         <h1 id="welcome-title" class="welcome-title">Boo-Ville</h1>
         <p class="welcome-subtitle">The Silly Spooky Night!</p>
         <p class="welcome-hint">
-          Tap the 6 talking Halloween friends, pop rainbow bubbles, and discover 10 friendly secrets!
+          Tap 6 talking Halloween friends, brew wacky potions, play flashlight hide-and-seek, trick-or-treat, and throw a monster dance party!
         </p>
         <button id="play-btn" type="button" class="btn-play">
           <span>Tap to Play!</span>
@@ -74,8 +74,31 @@
       </header>
 
       <div id="scene-layer" class="scene-layer"></div>
+      <div id="stage-fx-layer" class="stage-fx-layer" aria-hidden="true"></div>
+      <div id="activity-layer" class="activity-layer"></div>
       <canvas id="particle-canvas" class="particle-canvas" aria-hidden="true"></canvas>
       <div id="speech-layer" class="speech-layer" aria-live="polite"></div>
+
+      <nav id="activity-dock" class="activity-dock" aria-label="Boo-Ville mini-activities">
+        <button type="button" class="dock-btn" data-activity="cauldron" aria-label="Open Winnie's Wacky Potions">
+          <span class="dock-emoji" aria-hidden="true">🧪</span>
+          <span class="dock-label">Potions</span>
+          <span id="dock-potions-badge" class="dock-badge">0/8</span>
+        </button>
+        <button type="button" class="dock-btn" data-activity="flashlight" aria-label="Play Flashlight Hide-and-Seek">
+          <span class="dock-emoji" aria-hidden="true">🔦</span>
+          <span class="dock-label">Seek</span>
+        </button>
+        <button type="button" class="dock-btn" data-activity="trick-or-treat" aria-label="Play Knock-Knock Trick-or-Treat">
+          <span class="dock-emoji" aria-hidden="true">🚪</span>
+          <span class="dock-label">Knock</span>
+        </button>
+        <button type="button" class="dock-btn" data-activity="dress-up" aria-label="Open Silly Dress-Up and Dance Party">
+          <span class="dock-emoji" aria-hidden="true">🎩</span>
+          <span class="dock-label">Party</span>
+          <span id="dock-costumes-badge" class="dock-badge">2/6</span>
+        </button>
+      </nav>
     </main>
 
     <!-- Native Modal Settings Dialog -->
@@ -115,18 +138,18 @@
           </div>
         </fieldset>
 
-        <section class="coming-soon-box" aria-label="Upcoming Boo-Ville updates">
-          <p class="coming-soon-title">Coming Next in Phase 3 Mini-Games</p>
+        <section class="coming-soon-box" aria-label="Your Boo-Ville Collection">
+          <p class="coming-soon-title">Your Boo-Ville Collection</p>
           <ul class="coming-soon-list">
-            <li>🧪 Winnie's Wacky Potion Cauldron &amp; Spell Book</li>
-            <li>🔦 Flashlight Hide-and-Seek with Voiced Hints</li>
-            <li>🚪 Knock-Knock Trick-or-Treat &amp; Monster Dance Party</li>
+            <li>✨ Courtyard Secrets: <strong id="settings-secrets-progress">0 / 10</strong></li>
+            <li>🧪 Spells Brewed: <strong id="settings-potions-progress">0 / 8</strong></li>
+            <li>🎩 Costumes Unlocked: <strong id="settings-costumes-progress">2 / 6</strong></li>
           </ul>
         </section>
 
         <div class="settings-footer">
           <button id="reset-progress-btn" type="button" class="reset-btn">
-            Reset Candy &amp; Secrets
+            Reset All Progress
           </button>
           <form method="dialog">
             <button type="submit" class="done-btn">Back to Boo-Ville</button>

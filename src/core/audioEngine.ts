@@ -1,3 +1,4 @@
+import type { CreatureId } from '../creatures/types.ts';
 import { eventBus } from './eventBus.ts';
 import { gameState } from './state.ts';
 
@@ -18,6 +19,21 @@ const BASS_PATTERN: Array<number | null> = [
   174.61, null, 196.0, null, 146.83, null, null, null,
 ];
 
+// Upbeat Halloween disco groove for Monster Dance Party
+const PARTY_MELODY_PATTERN: Array<number | null> = [
+  523.25, null, 659.25, 783.99, 659.25, null, 587.33, 523.25,
+  659.25, null, 783.99, null, 880.0, 783.99, 659.25, null,
+  587.33, null, 698.46, 880.0, 783.99, null, 659.25, 587.33,
+  523.25, 659.25, 783.99, 1046.5, 880.0, null, 783.99, null,
+];
+
+const PARTY_BASS_PATTERN: Array<number | null> = [
+  130.81, null, 261.63, null, 130.81, null, 261.63, null,
+  174.61, null, 349.23, null, 196.0, null, 392.0, null,
+  146.83, null, 293.66, null, 196.0, null, 392.0, null,
+  130.81, null, 261.63, null, 196.0, null, 261.63, null,
+];
+
 class AudioEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
@@ -32,6 +48,7 @@ class AudioEngine {
   private currentStep = 0;
   private unlocked = false;
   private visibilityBound = false;
+  private partyMode = false;
 
   private readonly voiceCache = new Map<string, AudioBuffer>();
   private activeVoiceSource: AudioBufferSourceNode | null = null;
@@ -120,19 +137,65 @@ class AudioEngine {
     }
   }
 
+  setPartyMode(active: boolean): void {
+    if (this.partyMode === active) return;
+    this.partyMode = active;
+    this.currentStep = 0;
+    if (this.ctx && this.unlocked) {
+      this.nextStepTime = Math.max(this.ctx.currentTime + 0.04, this.nextStepTime);
+    }
+  }
+
   private scheduleMusicSteps(): void {
     if (!this.ctx || !this.musicGain || this.ctx.state !== 'running') return;
-    const stepDuration = 0.23; // bouncy ~130 BPM eighth notes
+    const stepDuration = this.partyMode ? 0.175 : 0.23; // 130 BPM spooky vs bouncy party disco
+    const melody = this.partyMode ? PARTY_MELODY_PATTERN : MELODY_PATTERN;
+    const bass = this.partyMode ? PARTY_BASS_PATTERN : BASS_PATTERN;
+
     while (this.nextStepTime < this.ctx.currentTime + 0.28) {
-      const idx = this.currentStep % MELODY_PATTERN.length;
-      const melodyFreq = MELODY_PATTERN[idx];
-      const bassFreq = BASS_PATTERN[idx];
+      const idx = this.currentStep % melody.length;
+      const melodyFreq = melody[idx];
+      const bassFreq = bass[idx];
       if (!gameState.get().audio.muted) {
         if (melodyFreq) this.playMusicMarimba(melodyFreq, this.nextStepTime);
         if (bassFreq) this.playMusicBass(bassFreq, this.nextStepTime);
+        if (this.partyMode) this.playPartyBeat(idx, this.nextStepTime);
       }
       this.nextStepTime += stepDuration;
-      this.currentStep = (this.currentStep + 1) % MELODY_PATTERN.length;
+      this.currentStep = (this.currentStep + 1) % melody.length;
+    }
+  }
+
+  private playPartyBeat(step: number, when: number): void {
+    if (!this.ctx || !this.musicGain) return;
+    if (step % 4 === 0) {
+      // Soft bouncy kick
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(128, when);
+      osc.frequency.exponentialRampToValueAtTime(48, when + 0.09);
+      gain.gain.setValueAtTime(0.0001, when);
+      gain.gain.linearRampToValueAtTime(0.35, when + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.11);
+      osc.connect(gain);
+      gain.connect(this.musicGain);
+      osc.start(when);
+      osc.stop(when + 0.12);
+    } else if (step % 4 === 2) {
+      // Crisp wooden clap/tick
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(920, when);
+      osc.frequency.exponentialRampToValueAtTime(340, when + 0.045);
+      gain.gain.setValueAtTime(0.0001, when);
+      gain.gain.linearRampToValueAtTime(0.18, when + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.055);
+      osc.connect(gain);
+      gain.connect(this.musicGain);
+      osc.start(when);
+      osc.stop(when + 0.065);
     }
   }
 
@@ -494,6 +557,169 @@ class AudioEngine {
       gain.connect(this.sfxGain);
       osc.start(t);
       osc.stop(t + 0.2);
+    });
+  }
+
+  // --- Phase 3: Mini-Activity & Dance Pad SFX ---
+
+  playIngredientDrop(slotIndex = 0): void {
+    if (!this.isReady() || !this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    const base = 280 + slotIndex * 65;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(base, t);
+    osc.frequency.exponentialRampToValueAtTime(base * 1.9, t + 0.09);
+    osc.frequency.exponentialRampToValueAtTime(base * 1.4, t + 0.16);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.32, t + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.19);
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start(t);
+    osc.stop(t + 0.21);
+  }
+
+  playPotionBrew(): void {
+    if (!this.isReady() || !this.ctx || !this.sfxGain) return;
+    const notes = [523.25, 659.25, 783.99, 987.77, 1046.5, 1318.51];
+    const baseTime = this.ctx.currentTime;
+    notes.forEach((freq, i) => {
+      if (!this.ctx || !this.sfxGain) return;
+      const t = baseTime + i * 0.055;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.28, t + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.34);
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+      osc.start(t);
+      osc.stop(t + 0.36);
+    });
+  }
+
+  playFlashlightClick(): void {
+    if (!this.isReady() || !this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(900, t);
+    osc.frequency.exponentialRampToValueAtTime(260, t + 0.038);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.34, t + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start(t);
+    osc.stop(t + 0.06);
+  }
+
+  playHotColdPing(closeness01: number): void {
+    if (!this.isReady() || !this.ctx || !this.sfxGain) return;
+    const clamped = Math.max(0, Math.min(1, closeness01));
+    const t = this.ctx.currentTime;
+    const freq = 360 + clamped * 520;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.16 + clamped * 0.14, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start(t);
+    osc.stop(t + 0.2);
+  }
+
+  playDoorCreak(): void {
+    if (!this.isReady() || !this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(210, t);
+    osc.frequency.exponentialRampToValueAtTime(340, t + 0.18);
+    osc.frequency.exponentialRampToValueAtTime(265, t + 0.38);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.24, t + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start(t);
+    osc.stop(t + 0.45);
+  }
+
+  playSillyBonk(): void {
+    if (!this.isReady() || !this.ctx || !this.sfxGain) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(390, t);
+    osc.frequency.exponentialRampToValueAtTime(165, t + 0.14);
+    osc.frequency.exponentialRampToValueAtTime(295, t + 0.26);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.32, t + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start(t);
+    osc.stop(t + 0.32);
+  }
+
+  playCostumeSnap(): void {
+    if (!this.isReady() || !this.ctx || !this.sfxGain) return;
+    const notes = [523.25, 783.99, 1046.5];
+    const baseTime = this.ctx.currentTime;
+    notes.forEach((freq, i) => {
+      if (!this.ctx || !this.sfxGain) return;
+      const t = baseTime + i * 0.05;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.28, t + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+      osc.start(t);
+      osc.stop(t + 0.2);
+    });
+  }
+
+  playDancePad(creatureId: CreatureId): void {
+    if (!this.isReady() || !this.ctx || !this.sfxGain) return;
+    const riffs: Record<CreatureId, { type: OscillatorType; notes: number[]; step: number }> = {
+      pip: { type: 'sine', notes: [523.25, 659.25, 783.99], step: 0.065 },
+      boobell: { type: 'sine', notes: [880, 1174.66, 1318.51], step: 0.075 },
+      winnie: { type: 'triangle', notes: [659.25, 783.99, 987.77, 1318.51], step: 0.055 },
+      barnaby: { type: 'triangle', notes: [587.33, 698.46, 587.33, 880], step: 0.06 },
+      frankie: { type: 'triangle', notes: [130.81, 196.0, 261.63], step: 0.09 },
+      bitey: { type: 'sine', notes: [1046.5, 1318.51, 1567.98], step: 0.05 },
+    };
+    const riff = riffs[creatureId];
+    const baseTime = this.ctx.currentTime;
+    riff.notes.forEach((freq, i) => {
+      if (!this.ctx || !this.sfxGain) return;
+      const t = baseTime + i * riff.step;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = riff.type;
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.32, t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.24);
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+      osc.start(t);
+      osc.stop(t + 0.26);
     });
   }
 

@@ -2,7 +2,9 @@ import './styles/tokens.css';
 import './styles/layout.css';
 import './styles/scene.css';
 import './styles/creatures.css';
+import './styles/activities.css';
 
+import { ActivityManager } from './activities/activityManager.ts';
 import { eventBus } from './core/eventBus.ts';
 import { gameState } from './core/state.ts';
 import { BanterDirector } from './creatures/banterDirector.ts';
@@ -59,9 +61,11 @@ function bootstrap(): void {
 
   const stage = document.getElementById('game-stage');
   const sceneLayer = document.getElementById('scene-layer');
+  const stageFxLayer = document.getElementById('stage-fx-layer');
+  const activityLayer = document.getElementById('activity-layer');
   const canvas = document.getElementById('particle-canvas') as HTMLCanvasElement | null;
 
-  if (!stage || !sceneLayer || !canvas) {
+  if (!stage || !sceneLayer || !stageFxLayer || !activityLayer || !canvas) {
     throw new Error('Missing required Boo-Ville stage elements');
   }
 
@@ -75,6 +79,17 @@ function bootstrap(): void {
   const worldEvents = new WorldEventsDirector(courtyardSvg, particles);
   const banterDirector = new BanterDirector(stage, courtyardSvg, particles, voiceManager);
   void voiceManager.load();
+
+  new ActivityManager({
+    stage,
+    svg: courtyardSvg,
+    stageFxLayer,
+    activityLayer,
+    particles,
+    worldEvents,
+    banterDirector,
+    voiceManager,
+  });
 
   initSpeechLayer();
   const settings = initSettingsDialog();

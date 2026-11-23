@@ -1,6 +1,14 @@
+export type ActivityId = 'cauldron' | 'flashlight' | 'trick-or-treat' | 'dress-up';
+
 export interface GameEvents {
   'candy:add': { amount: number; x?: number; y?: number; source: string };
+  'candy:spend': { amount: number; source: string };
   'secret:discovered': { id: string; label: string; x: number; y: number };
+  'potion:discovered': { recipeId: string; total: number };
+  'costume:unlocked': { costumeId: string };
+  'costume:equipped': { creatureId: string; costumeId: string | null };
+  'activity:change': { active: ActivityId | null };
+  'dance:change': { active: boolean };
   'world:speech': {
     text: string;
     emoji: string;

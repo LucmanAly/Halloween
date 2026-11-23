@@ -272,6 +272,14 @@ export function createCourtyardSvg(): SVGSVGElement {
         <circle cx="212" cy="268" r="9" fill="#ffe47a" filter="url(#soft-glow)" aria-hidden="true" />
       </g>
 
+      <!-- Glowing Activity Badge: Knock-Knock Trick-or-Treat -->
+      <g transform="translate(403, 472)">
+        <g class="landmark-badge" data-launch-activity="trick-or-treat" role="button" tabindex="0" aria-label="Play Knock-Knock Trick-or-Treat">
+          <rect x="-46" y="-19" width="92" height="36" rx="18" fill="#2c144d" stroke="#ffd166" stroke-width="2.8" />
+          <text x="0" y="5" text-anchor="middle" font-size="16" font-weight="800" fill="#fff7c2" pointer-events="none">🚪 Knock!</text>
+        </g>
+      </g>
+
       <!-- MUSICAL GRAVEYARD FENCE (Secret 5: musical-fence) -->
       <g id="musical-fence">
         <rect x="595" y="544" width="365" height="12" rx="5" fill="#462d61" stroke="#251338" stroke-width="3" />
@@ -296,6 +304,14 @@ export function createCourtyardSvg(): SVGSVGElement {
           <ellipse cx="0" cy="-26" rx="54" ry="15" fill="#3b3254" stroke="#151024" stroke-width="4" />
           <ellipse class="cauldron-brew" cx="0" cy="-26" rx="44" ry="10" fill="#a4ff42" />
           <circle id="cauldron-anchor" cx="0" cy="-30" r="3" fill="transparent" pointer-events="none" />
+        </g>
+      </g>
+
+      <!-- Glowing Activity Badge: Winnie's Wacky Cauldron -->
+      <g transform="translate(1110, 488)">
+        <g class="landmark-badge" data-launch-activity="cauldron" role="button" tabindex="0" aria-label="Open Winnie's Wacky Potion Cauldron">
+          <rect x="-46" y="-19" width="92" height="36" rx="18" fill="#2c144d" stroke="#a9ff5e" stroke-width="2.8" />
+          <text x="0" y="5" text-anchor="middle" font-size="16" font-weight="800" fill="#d9ffb8" pointer-events="none">🧪 Brew!</text>
         </g>
       </g>
 

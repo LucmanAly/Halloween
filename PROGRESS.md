@@ -16,8 +16,8 @@
 | **Repository** | `https://github.com/LucmanAly/Halloween` |
 | **Live GitHub Pages URL** | `https://lucmanaly.github.io/Halloween/` |
 | **Local Workspace Path** | `C:\Users\zohan\.gemini\antigravity\scratch\Halloween` |
-| **Completed Phases** | **Phase 1 (Living Courtyard)** & **Phase 2 (Voiced Cast & Lip-Sync)** |
-| **Next Phase & Step** | **Phase 3 — Step 3.1: Winnie's Wacky Potion Cauldron (`src/activities/cauldronGame.ts`)** |
+| **Completed Phases** | **Phase 1 (Living Courtyard)**, **Phase 2 (Voiced Cast & Lip-Sync)** & **Phase 3 (4 Interactive Mini-Activities)** |
+| **Next Phase & Step** | **Phase 4 — Kid-Testing Polish & Final Launch Check** |
 | **Environment** | Windows · Node `v24.18.0` · npm `11.16.0` · Python `3.14.1` · `uv 0.11.26` · `ffmpeg 8.1.2` · `gh` CLI (`LucmanAly`) |
 | **Last Updated** | `2026-11-22` |
 
@@ -37,16 +37,18 @@
   - [x] Step 2.4: Built `src/creatures/banterDirector.ts` (60fps roaming, walker separation, Y-depth sorting, cursor eye-tracking, tap gags, 2-creature voiced banter, world-event vocal reactions)
   - [x] Step 2.5: Wired Phase 2 into `src/main.ts`, `src/ui/welcomeCurtain.ts`, and `index.html`; verified `typecheck`, `build`, and `vite preview` serving all 66 voice assets under `/Halloween/`
 
-- [ ] **Phase 3 — 4 Interactive Mini-Activities** *(START HERE)*
-  - [ ] Step 3.1: Activity Dock UI + Winnie's Wacky Cauldron & Spell Book (`src/activities/cauldronGame.ts`)
-  - [ ] Step 3.2: Flashlight Hide-and-Seek (`src/activities/flashlightGame.ts`)
-  - [ ] Step 3.3: Knock-Knock Trick-or-Treat & Candy Catcher (`src/activities/trickOrTreatGame.ts`)
-  - [ ] Step 3.4: Silly Dress-Up & Monster Dance Party (`src/activities/dressUpParty.ts`)
+- [x] **Phase 3 — 4 Interactive Mini-Activities** *(Completed)*
+  - [x] Pre-Activity Foundation: `StateStore` (`spendCandy`, `discoverPotion`, `unlockCostume`, `equipCostume`), `EventBus` Phase 3 events, `AudioEngine` dance disco groove + 8 activity/dance SFX, `VoiceManager.speakLineById` + custom bubble position, `BanterDirector` activity/dance/visibility helpers, `WorldEventsDirector.setPaused()`, bottom `#activity-dock` + landmark launch badges
+  - [x] Step 3.1: Winnie's Wacky Cauldron & 8-Spell Book (`src/activities/cauldronGame.ts`) with tap + drag ingredients, swirl stirring, and full-screen spells
+  - [x] Step 3.2: Flashlight Hide-and-Seek (`src/activities/flashlightGame.ts`) with spotlight canvas mask, visible-bounds clamping, hot/cold radar pings, and `hint_1` voices
+  - [x] Step 3.3: Knock-Knock Trick-or-Treat & Candy Catcher (`src/activities/trickOrTreatGame.ts`) with 3D door, `hint_2` mystery guesses, and zero-punishment 60fps Candy Catcher
+  - [x] Step 3.4: Silly Dress-Up & Monster Dance Party (`src/activities/dressUpParty.ts` + `src/creatures/costumes.ts`) with 6 unlockable SVG costumes, disco ball + spotlights, and 6 musical dance pads
+  - [x] Step 3.5: Verified `typecheck`, `build` (29 modules), and `vite preview` under `/Halloween/`
 
-- [ ] **Phase 4 — Kid-Testing Polish & Final Launch Check**
-  - [ ] Responsive touch-target & iPad/phone viewport pass
-  - [ ] Audio asset preloading & graceful fallback polish
-  - [ ] Final full live verification on `https://lucmanaly.github.io/Halloween/`
+- [ ] **Phase 4 — Kid-Testing Polish & Final Launch Check** *(START HERE)*
+  - [ ] Responsive touch-target & iPad/phone viewport pass across all 4 mini-activities + dock
+  - [ ] Audio asset preloading & graceful slow-network/offline fallback polish
+  - [ ] Final accessibility audit & live verification on `https://lucmanaly.github.io/Halloween/`
 
 ---
 
@@ -66,15 +68,23 @@
 | `src/styles/tokens.css` | Color palette, rounded typography, shadows, z-layers | CSS custom properties |
 | `src/styles/layout.css` | `100dvh` stage, HUD, speech bubbles, welcome curtain, `<dialog>` styles | Responsive UI styles |
 | `src/styles/scene.css` | Courtyard SVG animations, `.secret-target` bounce, reduced motion | Courtyard keyframes |
-| `src/styles/creatures.css` | Creature blink, walk/float/fly idle loops, 5 mouth shapes, 6 tap gags | Creature CSS animations |
-| `src/core/eventBus.ts` | Strongly typed pub/sub event bus | `eventBus`, `GameEvents` |
-| `src/core/state.ts` | Persistent `localStorage` state (`booville_save_v1`) | `gameState`, `SaveState` |
-| `src/core/audioEngine.ts` | Music loop with voice ducking, 15 SFX, overlap-free `AnalyserNode` voice player | `audioEngine` |
+| `src/styles/creatures.css` | Creature blink, walk/float/fly idle loops, 5 mouth shapes, 6 tap gags, dance mode | Creature CSS animations |
+| `src/styles/activities.css` | Phase 3 overlays, cauldron workbench, spotlight canvas, 3D door, catcher, dress-up & disco | Activity UI styles |
+| `src/core/eventBus.ts` | Strongly typed pub/sub event bus (Phases 1–3 events) | `eventBus`, `GameEvents`, `ActivityId` |
+| `src/core/state.ts` | Persistent `localStorage` state (`booville_save_v1`) + potion/costume/candy spend helpers | `gameState`, `SaveState` |
+| `src/core/audioEngine.ts` | Music loop + Party Disco mode, 23 SFX, overlap-free `AnalyserNode` voice player | `audioEngine` |
 | `src/creatures/types.ts` | Creature, mouth shape, voice manifest interfaces | `CreatureId`, `MouthShape`, `VoiceManifest`, `CreatureInstance` |
-| `src/creatures/voiceManager.ts` | Loads `manifest.json`, plays clips with real-time lip-sync & muted fallback cadence | `voiceManager`, `VoiceManager` |
+| `src/creatures/costumes.ts` | 6 unlockable SVG costumes, per-creature anchors, preview SVGs | `COSTUMES_CATALOG`, `renderCostumeMarkup()` |
+| `src/creatures/voiceManager.ts` | Loads `manifest.json`, plays clips & `hint_1`/`hint_2` by ID with lip-sync & safe bubble pos | `voiceManager`, `VoiceManager` |
 | `src/creatures/creatureRoster.ts` | Home positions, bubble colors, locomotion modes, and roaming bounds | `CREATURE_ROSTER` |
-| `src/creatures/creatureRig.ts` | Builds all 6 layered SVG creatures with tracking pupils, 5 mouth shapes, tap gags, `.creature-hat-slot` | `createCreatureRig()` |
-| `src/creatures/banterDirector.ts` | 60fps roaming, depth sorting, eye-tracking, tap reactions, 2-line banter, event cheers | `BanterDirector` |
+| `src/creatures/creatureRig.ts` | Builds all 6 layered SVG creatures with tracking pupils, 5 mouth shapes, vector costume slots | `createCreatureRig()`, `renderCreatureArtSvg()` |
+| `src/creatures/banterDirector.ts` | 60fps roaming, depth sorting, eye-tracking, banter, activity & dance party coordination | `BanterDirector` |
+| `src/activities/types.ts` | Shared Phase 3 mini-activity controller & dependency interfaces | `ActivityController`, `ActivityDeps` |
+| `src/activities/activityManager.ts` | Mutual-exclusion dock & landmark launcher + `Escape` handling | `ActivityManager` |
+| `src/activities/cauldronGame.ts` | Winnie's Wacky Cauldron + 8-recipe Spell Book + full-screen spell effects | `CauldronGame`, `POTION_RECIPES` |
+| `src/activities/flashlightGame.ts` | Spotlight canvas mask, visible-bounds hiding, hot/cold pings & `hint_1` voices | `FlashlightGame` |
+| `src/activities/trickOrTreatGame.ts` | 3D Knock-Knock door, `hint_2` guessing & 60fps Candy Catcher mini-game | `TrickOrTreatGame` |
+| `src/activities/dressUpParty.ts` | 6-costume candy shop, live preview & courtyard Monster Dance Party + 6 jam pads | `DressUpParty` |
 | `src/world/secretsCatalog.ts` | Single source of truth for the 10 courtyard secrets | `SECRETS_CATALOG`, `TOTAL_SECRETS` |
 | `src/world/courtyardSvg.ts` | Layered SVG courtyard (`1600×900`) + `#creature-stage-layer` + `#cauldron-anchor` | `createCourtyardSvg()` |
 | `src/world/particleCanvas.ts` | 60fps fireflies, leaves, cauldron/poppable bubbles, shooting stars, bursts | `ParticleCanvas` |
@@ -87,36 +97,21 @@
 
 ---
 
-## 4. Exact Next Steps for the Next LLM (Phase 3 Kickoff)
+## 4. Exact Next Steps for the Next LLM (Phase 4 Kickoff)
 
-> Start directly here! Phases 1 & 2 already provide the courtyard, `ParticleCanvas`, `audioEngine`, `voiceManager` (including 12 pre-generated `hint` clips across all 6 creatures!), `BanterDirector`, and `SaveState` fields (`potionsDiscovered`, `unlockedCostumes`, `equippedCostumes`).
+> Start directly here! Phases 1–3 are complete: living courtyard, 6 voiced creatures with lip-sync, and all 4 interactive mini-activities + dress-up & dance party are wired and persisted in `booville_save_v1`.
 
-### Pre-Activity Foundation (Quick Extensions)
-1. Extend `src/core/state.ts` `StateStore` with clean persistence helpers:
-   - `discoverPotion(recipeId: string): boolean`
-   - `unlockCostume(costumeId: string): boolean`
-   - `equipCostume(creatureId: CreatureId, costumeId: string | null): void`
-   - Re-apply `equippedCostumes` to creatures on boot inside `BanterDirector`.
-2. Add a clean bottom **Activity Dock** (`<nav class="activity-dock">` in `index.html` + `layout.css`) with 4 big kid-friendly icon buttons (`🧪 Potions`, `🔦 Seek`, `🚪 Knock`, `🎩 Dress-Up`), AND allow tapping landmarks (`cauldron`, `manor-door`) or dock buttons to launch activities cleanly.
-3. Add pause/coordination helpers to `src/creatures/banterDirector.ts` (e.g., `setActivityMode(locked: boolean)`, `getCreatures()`, `triggerDanceMode(active: boolean)`) so roaming banter yields cleanly while a mini-game is open.
+### Step 4.1 — Responsive Viewport & Touch-Target Audit
+- Inspect desktop (`1440×900`), tablet (`1024×768`), and portrait phone (`390×844`) layouts for `#activity-dock`, HUD pills, Cauldron, Flashlight, Candy Catcher, and Dress-Up cards.
+- Verify no horizontal overflow or clipped buttons when mobile browser toolbars appear.
 
-### Step 3.1 — Winnie's Wacky Potion Cauldron (`src/activities/cauldronGame.ts`)
-- Modal/overlay workbench featuring Winnie + cauldron + 5 goofy tappable/draggable ingredients (*Moon Cheese, Giggle Berries, Glow Worms, Candy Corn, Rainbow Slime*) + **Spell Book** shelf (`potionsDiscovered`).
-- Dropping 3 ingredients & swirling/tapping **Brew!** plays Winnie's voice + `audioEngine.playCauldronSplash()` + triggers one of 6–8 hilarious full-screen effects on `ParticleCanvas` and awards `+5` Magic Candy!
+### Step 4.2 — Audio Preloading & Offline / Slow-Network Polish
+- Warm-cache critical voice clips (`pip/greet_1.mp3`, `hint_1.mp3`, `hint_2.mp3`) gently in background after `welcomeCurtain` unlock without blocking first paint.
+- Verify muted fallback cadence and graceful network-failure handling across all 4 mini-activities.
 
-### Step 3.2 — Flashlight Hide-and-Seek (`src/activities/flashlightGame.ts`)
-- Overlay or canvas spotlight mask (`globalCompositeOperation` / radial gradient dark mask following finger/mouse) dimming the courtyard.
-- Hides 4–6 creatures around courtyard landmarks; plays each hidden creature's already-generated `hint` voice clips (`public/audio/voices/<id>/hint_1.mp3`, `hint_2.mp3` via `voiceManager`) + hot/cold pulse cues; shining the beam on a hiding spot pops them out with sparkles & candy!
-
-### Step 3.3 — Knock-Knock Trick-or-Treat & Candy Catcher (`src/activities/trickOrTreatGame.ts`)
-- Opens haunted door knock-knock sequence: tap to knock (`audioEngine.playDoorKnock()`), hear a mystery creature's `hint_2` voice clue behind the door, pick/tap to swing the door open, then slide a pumpkin bucket via touch/mouse/arrow keys to catch bouncing candy while dodging silly flying socks/broccoli (funny reaction, zero lives lost!).
-
-### Step 3.4 — Silly Dress-Up & Monster Dance Party (`src/activities/dressUpParty.ts`)
-- Upgrade `creatureRig.ts` `.creature-hat-slot` (`setCostume(costumeId)`) with colorful vector SVG accessories (*Wizard Hat, Crown, Star Glasses, Bowtie, Party Hat, Flower Crown*) purchasable/unlockable with Magic Candy (`unlockedCostumes` / `equippedCostumes`).
-- Add **Monster Dance Party!** toggle: drops a glowing pumpkin disco ball, switches music tempo/groove, animates all 6 creatures dancing in sync, and turns tapping each creature into a musical voice/instrument pad!
-
-### Step 3.5 — Verify & Ship Phase 3
-- Run `npm run typecheck && npm run build`, verify `vite preview` under `/Halloween/`, update `PROGRESS.md` for Phase 4, commit, push to `main`, and verify live GitHub Pages.
+### Step 4.3 — Accessibility & Final Live Verification
+- Run keyboard-only walkthrough (`Tab`, `Enter`/`Space`, `Escape`, Arrow keys in Flashlight & Candy Catcher) and screen-reader label checks.
+- Run `npm run typecheck && npm run build`, verify `vite preview`, update `PROGRESS.md` as Complete, push to `main`, and verify live GitHub Pages (`https://lucmanaly.github.io/Halloween/`).
 
 ---
 
@@ -136,3 +131,4 @@
 |---|---|---|
 | `2026-11-22` | Phase 1 Complete | Cloned `LucmanAly/Halloween`, wrote `PLAN.md`/`PROGRESS.md`/`README.md`, built Vite + TS living courtyard (`17` modules), `typecheck` + `build` + `vite preview` + live GitHub Pages deploy (`45081090618`) verified HTTP 200. |
 | `2026-11-22` | Phase 2 Complete | Created `scripts/generate_voices.py` and synthesized 66 neural `.mp3` voice clips (`2230.4 KB`) + `manifest.json`; hardened `AudioEngine` (music ducking, monotonic `voicePlaySeq`, `playBoneRattle()`, `playMonsterStomp()`); built `VoiceManager`, 6 rigged SVG creatures (`creatureRoster.ts`, `creatureRig.ts`, `creatures.css`), and `BanterDirector`. Verified `npm run typecheck` (`0`), `npm run build` (`22` modules, `dist/assets/index-B5Sj7SiX.js`, `index-BnKisu45.css`), and `vite preview` HTTP `200` for HTML, JS, CSS, `manifest.json` (`66` lines), and sampled `.mp3` clips for all 6 creatures. |
+| `2026-11-22` | Phase 3 Complete | Extended core contracts (`eventBus.ts`, `state.ts`, `audioEngine.ts` disco beat + 8 Phase 3 SFX, `voiceManager.ts` `speakLineById`), built `costumes.ts` + vector accessory rigging in `creatureRig.ts`, added bottom `#activity-dock` + landmark play badges + `activities.css`, and implemented all 4 mini-activities (`cauldronGame.ts`, `flashlightGame.ts`, `trickOrTreatGame.ts`, `dressUpParty.ts`) + `activityManager.ts`. Verified `npm run typecheck` (`0`), `npm run build` (`29` modules, `dist/assets/index-BzT9kInf.js`, `index-DE5IKPXX.css`), and `vite preview` HTTP `200` across HTML markers, bundles, `manifest.json` (`66` lines, `12` hints), and sampled `hint_1`/`hint_2` `.mp3` clips. |
