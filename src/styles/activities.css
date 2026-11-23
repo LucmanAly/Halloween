@@ -7,7 +7,7 @@
   display: grid;
   place-items: center;
   padding: clamp(68px, 10vh, 84px) 14px max(16px, env(safe-area-inset-bottom));
-  background: radial-gradient(circle at 50% 40%, rgba(44, 18, 86, 0.56), rgba(11, 5, 28, 0.78));
+  background: rgba(17, 16, 33, .76);
   backdrop-filter: blur(5px);
 }
 
@@ -20,9 +20,9 @@
   gap: 12px;
   padding: clamp(14px, 3vw, 22px);
   border-radius: 28px;
-  border: 3px solid rgba(255, 209, 102, 0.55);
-  background: linear-gradient(180deg, rgba(44, 21, 82, 0.96), rgba(24, 11, 48, 0.98));
-  box-shadow: 0 24px 60px rgba(8, 3, 20, 0.72), 0 0 28px rgba(157, 107, 255, 0.25);
+  border: 1px solid #766382;
+  background: linear-gradient(155deg, #34304b, #222239 66%);
+  box-shadow: var(--shadow-soft);
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -48,7 +48,7 @@
 
 .activity-title {
   margin: 0;
-  font-size: clamp(1.2rem, 3vw, 1.55rem);
+  font: 600 clamp(1.25rem, 3vw, 1.75rem)/1.1 var(--font-display);
   color: var(--color-candy-gold);
   line-height: 1.15;
 }
@@ -87,11 +87,11 @@
   padding-block: 10px;
   border-radius: var(--radius-pill);
   border: 2.5px solid #fff0b8;
-  background: linear-gradient(180deg, #ffae42, #ff7b1f);
+  background: #f9ad7c;
   color: #240f3b;
   font-size: 1.05rem;
   font-weight: 700;
-  box-shadow: 0 5px 0 #8a2e00;
+  box-shadow: 0 4px 0 #a55b5d;
   transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.15s ease;
 }
 
@@ -101,7 +101,7 @@
 
 .kid-action-btn:active:not(:disabled) {
   transform: translateY(3px);
-  box-shadow: 0 2px 0 #8a2e00;
+  box-shadow: 0 2px 0 #a55b5d;
 }
 
 .kid-action-btn:disabled {
@@ -440,8 +440,8 @@
   max-inline-size: calc(100vw - 20px);
   padding: 10px 14px;
   border-radius: 26px;
-  border: 2.5px solid var(--color-border-glow);
-  background: rgba(25, 11, 52, 0.9);
+  border: 1px solid var(--color-border-glow);
+  background: #25263deb;
   backdrop-filter: blur(10px);
   box-shadow: 0 14px 36px rgba(8, 3, 20, 0.6);
 }

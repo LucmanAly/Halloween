@@ -7,6 +7,7 @@ An interactive, kid-friendly Halloween courtyard world built for children under 
 - **Live Progress & LLM Handoff:** [`PROGRESS.md`](./PROGRESS.md)
 
 ## Features
+- **Storybook Artwork and Responsive Controls:** Meet all six characters from the Friends panel, jump into a mini-game from the labeled dock, or explore the full courtyard on a portrait phone.
 - **6 Living Voiced Creatures with Real Lip-Sync:** Pip the Pumpkin, Boo-Bell the Ghost, Winnie the Giggle-Witch, Barnaby the Skeleton, Frankie the Gentle Monster, and Bitey the Tiny Bat roam the courtyard, follow your finger/cursor with their eyes, react with unique animated tap gags, chat in 2-line voiced banter, and speak 66 pre-generated neural character lines synced at 60fps via Web Audio `AnalyserNode`.
 - **4 Interactive Mini-Activities (Phase 3):**
   - **🧪 Winnie's Wacky Cauldron:** Drag or tap silly ingredients, swirl the pot, and discover 8 wacky full-screen spells in your Spell Book.

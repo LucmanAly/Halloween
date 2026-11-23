@@ -1,26 +1,23 @@
 :root {
-  --font-display: 'Fredoka', 'Nunito', 'Comic Sans MS', ui-rounded, system-ui, -apple-system, sans-serif;
-
-  --color-bg-deep: #13092b;
-  --color-surface: rgba(34, 17, 66, 0.86);
-  --color-surface-solid: #28144d;
-  --color-border-glow: rgba(255, 214, 102, 0.45);
-
-  --color-text: #fff9f0;
-  --color-text-muted: #decbf7;
-
-  --color-candy-gold: #ffd166;
-  --color-pumpkin: #ff7c24;
-  --color-pumpkin-dark: #d94c00;
-  --color-mint: #6ef3b3;
-  --color-bubble-pink: #ff7eb6;
-  --color-magic-purple: #9d6bff;
-
+  --font-display: 'Fredoka', ui-rounded, system-ui, sans-serif;
+  --font-body: 'Nunito', ui-rounded, system-ui, sans-serif;
+  --color-bg-deep: #151629;
+  --color-surface: #24253c;
+  --color-surface-solid: #24253c;
+  --color-border-glow: #55506d;
+  --color-text: #fff1dc;
+  --color-text-muted: #e1d5e6;
+  --color-candy-gold: #ffd391;
+  --color-pumpkin: #faaa78;
+  --color-pumpkin-dark: #b96257;
+  --color-mint: #b1d5ac;
+  --color-bubble-pink: #edabc7;
+  --color-magic-purple: #b9a7e2;
+  --control-fill: #292940;
   --radius-pill: 999px;
-  --radius-card: 24px;
-  --shadow-soft: 0 10px 28px rgba(10, 4, 24, 0.45);
-  --shadow-glow: 0 0 24px rgba(255, 195, 77, 0.35);
-
+  --radius-card: 22px;
+  --shadow-soft: 0 14px 40px #120f2399;
+  --shadow-glow: 0 0 24px #e8a66638;
   --z-scene: 1;
   --z-stage-fx: 2;
   --z-activity: 3;

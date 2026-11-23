@@ -64,13 +64,13 @@ function renderFencePickets(): string {
 export function createCourtyardSvg(): SVGSVGElement {
   const wrapper = document.createElement('div');
   wrapper.innerHTML = `
-  <svg class="courtyard-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="${SVG_NS}" role="img" aria-label="Boo-Ville animated Halloween courtyard">
+  <svg class="courtyard-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="${SVG_NS}" role="group" aria-label="Interactive courtyard">
     <defs>
       <linearGradient id="sky-grad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#13092b" />
-        <stop offset="45%" stop-color="#2a1554" />
-        <stop offset="82%" stop-color="#532574" />
-        <stop offset="100%" stop-color="#7c3b85" />
+        <stop offset="0%" stop-color="#1c1b32" />
+        <stop offset="45%" stop-color="#322a49" />
+        <stop offset="82%" stop-color="#604768" />
+        <stop offset="100%" stop-color="#90677a" />
       </linearGradient>
 
       <radialGradient id="moon-glow" cx="50%" cy="50%" r="50%">
@@ -86,24 +86,24 @@ export function createCourtyardSvg(): SVGSVGElement {
       </radialGradient>
 
       <linearGradient id="hill-far" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#351b5c" />
-        <stop offset="100%" stop-color="#251245" />
+        <stop offset="0%" stop-color="#433852" />
+        <stop offset="100%" stop-color="#302940" />
       </linearGradient>
 
       <linearGradient id="hill-mid" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#2c194d" />
-        <stop offset="100%" stop-color="#1c0f36" />
+        <stop offset="0%" stop-color="#37344c" />
+        <stop offset="100%" stop-color="#252539" />
       </linearGradient>
 
       <linearGradient id="yard-ground" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#362457" />
-        <stop offset="50%" stop-color="#261742" />
-        <stop offset="100%" stop-color="#1a0e30" />
+        <stop offset="0%" stop-color="#3f3955" />
+        <stop offset="50%" stop-color="#322c46" />
+        <stop offset="100%" stop-color="#202136" />
       </linearGradient>
 
       <linearGradient id="path-grad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#573d78" />
-        <stop offset="100%" stop-color="#3d2759" />
+        <stop offset="0%" stop-color="#6c526e" />
+        <stop offset="100%" stop-color="#4a395a" />
       </linearGradient>
 
       <radialGradient id="window-glow" cx="50%" cy="50%" r="60%">
@@ -151,8 +151,8 @@ export function createCourtyardSvg(): SVGSVGElement {
 
       <!-- Soft twilight clouds -->
       <g class="drift-cloud-slow" opacity="0.26" aria-hidden="true">
-        <path d="M480,150 Q510,120 550,132 Q585,105 630,128 Q665,125 680,152 Q695,172 655,175 L500,175 Q468,170 480,150Z" fill="#a879d1" />
-        <path d="M1040,125 Q1075,98 1118,112 Q1152,88 1196,112 Q1230,108 1244,132 Q1254,152 1215,154 L1060,154 Q1028,150 1040,125Z" fill="#9a6bc7" />
+        <path d="M480,150 Q510,120 550,132 Q585,105 630,128 Q665,125 680,152 Q695,172 655,175 L500,175 Q468,170 480,150Z" fill="#c89aa8" />
+        <path d="M1040,125 Q1075,98 1118,112 Q1152,88 1196,112 Q1230,108 1244,132 Q1254,152 1215,154 L1060,154 Q1028,150 1040,125Z" fill="#c295a6" />
       </g>
 
       <!-- Smiling Moon (Secret 1: moon) -->
@@ -179,7 +179,7 @@ export function createCourtyardSvg(): SVGSVGElement {
     <!-- LAYER 2: DISTANT HILLS & TREES -->
     <g id="layer-hills" aria-hidden="true">
       <path d="M0,565 Q240,460 520,535 T1050,515 T1600,545 L1600,900 L0,900 Z" fill="url(#hill-far)" />
-      <g fill="#28124a">
+      <g fill="#392f4b">
         <polygon points="105,530 138,440 172,530" />
         <polygon points="150,535 178,465 205,535" />
         <polygon points="755,520 792,425 828,520" />
@@ -189,12 +189,12 @@ export function createCourtyardSvg(): SVGSVGElement {
       <path d="M0,610 Q360,545 780,600 T1600,590 L1600,900 L0,900 Z" fill="url(#hill-mid)" />
       <path d="M0,635 Q400,595 820,625 T1600,618 L1600,900 L0,900 Z" fill="url(#yard-ground)" />
       <path d="M375,638 Q420,695 570,715 T1040,740 Q1260,750 1600,720 L1600,785 Q1230,822 980,805 T510,762 Q335,730 330,638 Z" fill="url(#path-grad)" opacity="0.85" />
-      <ellipse cx="420" cy="688" rx="34" ry="12" fill="#6d4f94" opacity="0.65" />
-      <ellipse cx="520" cy="718" rx="40" ry="13" fill="#6d4f94" opacity="0.65" />
-      <ellipse cx="645" cy="738" rx="44" ry="14" fill="#6d4f94" opacity="0.65" />
-      <ellipse cx="785" cy="754" rx="42" ry="14" fill="#6d4f94" opacity="0.65" />
-      <ellipse cx="920" cy="765" rx="38" ry="13" fill="#6d4f94" opacity="0.65" />
-      <ellipse cx="1125" cy="770" rx="46" ry="14" fill="#6d4f94" opacity="0.6" />
+      <ellipse cx="420" cy="688" rx="34" ry="12" fill="#987783" opacity="0.65" />
+      <ellipse cx="520" cy="718" rx="40" ry="13" fill="#987783" opacity="0.65" />
+      <ellipse cx="645" cy="738" rx="44" ry="14" fill="#987783" opacity="0.65" />
+      <ellipse cx="785" cy="754" rx="42" ry="14" fill="#987783" opacity="0.65" />
+      <ellipse cx="920" cy="765" rx="38" ry="13" fill="#987783" opacity="0.65" />
+      <ellipse cx="1125" cy="770" rx="46" ry="14" fill="#987783" opacity="0.6" />
     </g>
 
     <!-- LAYER 3: HAUNTED MANOR, MUSICAL FENCE, CAULDRON, TREE -->

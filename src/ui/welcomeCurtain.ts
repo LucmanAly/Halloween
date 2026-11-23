@@ -17,16 +17,11 @@ export function initWelcomeCurtain(
 
   let entered = false;
 
-  playBtn.addEventListener('click', async () => {
+  playBtn.addEventListener('click', () => {
     if (entered) return;
     entered = true;
 
-    try {
-      await audioEngine.unlock();
-      audioEngine.playSparkleChime();
-    } catch {
-      // Allow playing visually even if audio context is restricted.
-    }
+    void audioEngine.unlock().then(() => audioEngine.playSparkleChime()).catch(() => {});
 
     stage.removeAttribute('inert');
     curtain.classList.add('is-leaving');
@@ -44,6 +39,6 @@ export function initWelcomeCurtain(
     banterDirector.start();
     banterDirector.greetOnEnter();
     window.setTimeout(() => voiceManager.preloadPriorityVoices(), 1200);
-    document.querySelector<HTMLButtonElement>('#activity-dock .dock-btn')?.focus();
+    document.getElementById('courtyard-title')?.focus();
   });
 }

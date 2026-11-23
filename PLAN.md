@@ -4,6 +4,17 @@
 
 ---
 
+## Character and UX rebuild
+
+| Step | Implementation | Acceptance |
+|---|---|---|
+| Redraw the cast | Give each of the six friends an original silhouette, palette, and costume anchors. Share the artwork between the courtyard and every portrait. | Each friend is recognizable at small sizes. Mouth shapes, eye tracking, reactions, and outfits work on the new rigs. |
+| Rebuild the player interface | Use an illustrated welcome screen, a labeled five-button dock, a compact HUD, and a redesigned settings dialog. | Kids can start playing, talk to a friend, or open any activity from obvious controls. Keyboard focus returns to the activity launcher. |
+| Make portrait play practical | Frame the full courtyard on narrow screens and start with the six large Friends buttons visible. Let Hide & Seek and the dance party use the full screen. | All six friends can be reached on a phone without waiting for them to wander into view. |
+| Preserve compatibility | Use the existing creature IDs, voices, save data, and GitHub Pages build path. | Old candy, discovered spells and secrets, and equipped costumes still load. All four activities open and play. |
+
+The earlier sections below document the original gameplay and architecture. The rebuild table supersedes the earlier character artwork and interface specifications.
+
 ## 1. Vision & Core Concept
 
 **Boo-Ville: The Silly Spooky Night!** is a living, animated, touch-first Halloween courtyard built specifically for **kids under 10 (ages 4–9)** and deployed statically on **GitHub Pages** (`https://lucmanaly.github.io/Halloween/`).
